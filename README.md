@@ -6,5 +6,5 @@ MarketSync es una plataforma que permite que tu catálogo de productos se cargue
 El propósito de este repositorio es es el de proporcionar la documentación necesaria para la integración de nueva funcionalidad y aplicaciones  a la plataforma de [MarketSync](https://marketsync.mx).
 
 1. [Proceso de registro](docs/registro.md)
-2. 
+2. [Definición de Formas](docs/forma.md)
 

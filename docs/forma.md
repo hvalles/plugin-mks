@@ -63,7 +63,13 @@ y la **definición** consiste en elementos que definen el tipo, presentación y 
 ### Tipos de elementos
 
 1. **text** 
-
+```
+"rfc" => array(
+                "rules"     => $this->getString(15),
+                "default" => '',
+                "transform" => "trim"
+            ),
+```
 2. **button**
 3. **read**
 4. **hidden**
