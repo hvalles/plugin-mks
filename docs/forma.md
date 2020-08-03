@@ -67,8 +67,8 @@ y la **definición** consiste en elementos que definen el tipo, presentación y 
 ```javascript
     "rfc" : {
         "rules"     : "min_length[0]|max_length[15]",
-        "default" => "",
-        "transform" => "trim"
+        "default"   : "",
+        "transform" : "trim"
     },
 ```
 2. **button** Botones para submit o desencadenar acciones
@@ -83,23 +83,23 @@ y la **definición** consiste en elementos que definen el tipo, presentación y 
 ```javascript
        "feed" : {
             "elemento" : "read",
-            "default" : "",
+            "default"  : "",
         },
 ```
 4. **hidden** Texto oculto 
 ```javascript
     "id" : {
             "elemento" : "hidden",
-            "default" : "12345"
+            "default"  : "12345"
     }
 ```
 5. **textarea**
 ```javascript
     "descripcion" : {
-        'label' : 'Descripcion',
-        'elemento' => 'textarea',
-        "rules"     => "trim|min_length[0]|max_length[500]|required",
-        "transform" => "trim"
+        'label'     : 'Descripcion',
+        'elemento'  : 'textarea',
+        "rules"     : "trim|min_length[0]|max_length[500]|required",
+        "transform" : "trim"
     },
 
 ```
@@ -189,7 +189,7 @@ y la **definición** consiste en elementos que definen el tipo, presentación y 
 ```
 
 ### Observaciones
-Los elementos que comiencen xon el prefijo "btn", mp serán procesados en el servidor. 
+Los elementos que comiencen con el prefijo "btn", no serán procesados en el servidor. 
 
 ### Porque utilizar este formato y no código HTML directo.
 La principal razón es la uniformidad en la presentación del contenido, así como al momento de incorporar mejoras al código o presentación visual, estas serán incorporadas de forma automática en sus componentes y no se verán desactualiados conforme pasa el tiempo y se incorporan nuevas vistas a la plataforma.
