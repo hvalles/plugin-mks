@@ -16,4 +16,4 @@ Adjuntando la siguiente información:
 - **Imagen** Adjuntar una imagen relacionada al componente. 
 
 ## Información adicional
-- (Arreglo JSON de componentes)[forma.md]
+- Arreglo JSON de [componentes](forma.md)
