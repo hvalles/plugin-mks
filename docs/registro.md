@@ -12,5 +12,8 @@ Adjuntando la siguiente información:
 - **Descripción** Descripción detallada de lo que el componente realiza y la funcionalidad que agrega a la plataforma.
 - **Instrucciones** Instrucciones (HTML) de intalación del componente.
 - **Campos** (opcional) Arreglo JSON que permite desplegar, una forma en el componente para recabar información del usuario final.
-- *Vista* En caso de que la información a desplegar sea muy compleja se omite la sección de campos y se agrega el nombre de la bista a desplegar.
-- *Imagen* Adjuntar una imagen relacionada al componente. 
+- **Vista** En caso de que la información a desplegar sea muy compleja se omite la sección de campos y se agrega el nombre de la bista a desplegar.
+- **Imagen** Adjuntar una imagen relacionada al componente. 
+
+## Información adicional
+- (Arreglo JSON de componentes)[forma.md]
