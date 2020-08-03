@@ -23,6 +23,7 @@ y la **definición** consiste en elementos que definen el tipo, presentación y 
 - **relatdTo** Solamente aplica en el caso de un dropdown, te permite el acceso a una tabla de la base de datos en el formato (table|key|description) Ejemplo (paises|id|pais)
 - **filter** Al igual que el relatedTo, se utiliza para los fropdown relacionados a las tablas y en este caso permite filtrar la información a desplegar.
 - **transform** Funciones que se aplicarán al elemento una vez que se obtenga la información en el lado del servidor `Ej trim`, puden ir separadas por pipe.
+- **width** Ancho del elemento a desplegar.
 - **rules** Reglas que se aplicarán a la entrada para ver si cumple con los requisitos correspondientes. 
 
 #### Ejemplo Rules
@@ -51,7 +52,7 @@ y la **definición** consiste en elementos que definen el tipo, presentación y 
       "elemento":"label",
       "class":"h6",
       "default":"Muchas gracias por su preferencia."
-   },∫
+   },
    "enlace":{
       "elemento":"link",
       "label":"Solicitar Acceso",
@@ -62,28 +63,133 @@ y la **definición** consiste en elementos que definen el tipo, presentación y 
 
 ### Tipos de elementos
 
-1. **text** 
+1. **text** Texto de entrada HTML input
+```javascript
+    "rfc" : {
+        "rules"     : "min_length[0]|max_length[15]",
+        "default" => "",
+        "transform" => "trim"
+    },
 ```
-"rfc" => array(
-                "rules"     => $this->getString(15),
-                "default" => '',
-                "transform" => "trim"
-            ),
+2. **button** Botones para submit o desencadenar acciones
+ ```javascript
+    "btn_row" : {
+        "elemento" : "button",
+        "label" : "+",
+        "class" : "btn-success"
+    }
 ```
-2. **button**
-3. **read**
-4. **hidden**
+3. **read** Texto de solo lectura
+```javascript
+       "feed" : {
+            "elemento" : "read",
+            "default" : "",
+        },
+```
+4. **hidden** Texto oculto 
+```javascript
+    "id" : {
+            "elemento" : "hidden",
+            "default" : "12345"
+    }
+```
 5. **textarea**
-6. **checkbox**
-7. **image**
-8. **label**
-9. **link**
-10. **dropdown**
-11. **date**
-12. **password**
-13. **search**
-14. **group**
+```javascript
+    "descripcion" : {
+        'label' : 'Descripcion',
+        'elemento' => 'textarea',
+        "rules"     => "trim|min_length[0]|max_length[500]|required",
+        "transform" => "trim"
+    },
 
+```
+6. **checkbox**
+```javascript
+    "activo" : {
+        "elemento"  : "checkbox", 
+        "label"     : "Activo",
+        "rules"     : "is_natural|less_than[2]"
+    },
+
+```
+7. **image**
+```javascript
+    "btn_imagen"  : {
+        "label"   : "Imagen",
+        "class"   : "draw-only",
+        "elemento": "image",
+        "width"   : "300",
+        "default" : "field_url"
+    },
+```
+8. **label**
+```javascript
+    "advertencia"  : {
+        "elemento" : "label",
+        "class"    : "bordered text-danger",
+        "default"  : "Precaución",
+    },
+```
+9. **link**
+```javascript
+    "btn_reset" : {
+        "elemento" : "link", 
+        "class"    : "col",
+        "label"    : "Reset",
+        "default"  : "/admin/usuarios/apikey/{0}"
+    },
+```
+10. **dropdown**
+```javascript
+    "rol" : {
+        "elemento" : "dropdown",
+        "class"    : "col",
+        "inList"   : "Supervisor|Ventas|Catalogo",
+        "rules"    : "trim|min_length[1]|max_length[20]|required",
+    },
+
+```
+11. **date**
+```javascript
+    "fecnac" : {
+        "elemento" : "date",
+        "label"    : "Fecha de Nacimiento",
+        "class"    : "col"
+    },
+```
+12. **password**
+```javascript
+    "clave" : {
+        "elemento" : "password",
+        "label"    : "Contraseña:", 
+        "rules"    : "min_length[5]|max_length[15]",
+        "default"  : "",
+        "transform": "trim"
+    },
+```
+13. **group**
+```javascript
+    "grupo-dimensiones" : {
+        "elemento" : "group",
+        "class" : "ml-1",
+        "default" : {        
+            "alto" : {
+                "rules"    : "greater_than_equal_to[0]|less_than_equal_to[10000]",
+                "class"    : "col",
+                "transform": "trim"
+            },
+
+            "ancho" : {
+                "rules"     : "greater_than_equal_to[0]|less_than_equal_to[10000]",
+                "class"     : "col",
+                "transform" : "trim"
+            },
+        },
+    },
+```
+
+### Observaciones
+Los elementos que comiencen xon el prefijo "btn", mp serán procesados en el servidor. 
 
 ### Porque utilizar este formato y no código HTML directo.
 La principal razón es la uniformidad en la presentación del contenido, así como al momento de incorporar mejoras al código o presentación visual, estas serán incorporadas de forma automática en sus componentes y no se verán desactualiados conforme pasa el tiempo y se incorporan nuevas vistas a la plataforma.
