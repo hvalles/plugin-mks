@@ -15,5 +15,7 @@ Adjuntando la siguiente información:
 - **Vista** En caso de que la información a desplegar sea muy compleja se omite la sección de campos y se agrega el nombre de la bista a desplegar.
 - **Imagen** Adjuntar una imagen relacionada al componente. 
 
+Cuando se reciba la información, pasará cerca de una seman, y s ele responderá ya sea confirmandole el nombre del compoenente o asignándole uno nuevo, similar al original o en si defecto la notificación de rechazo así como las causas.
+
 ## Información adicional
 - Arreglo JSON de [componentes](forma.md)

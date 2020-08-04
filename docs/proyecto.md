@@ -27,6 +27,8 @@ Todos los controladores de plugins se ubican el la carpeta `application/controll
 
 Todas las vistas de los plugins se ubican en `application/views/plugins`.
 
+Las imágenes deberan de estar contenidas en el directorio `public/static/img/plugins`, usualmente será el logo, pero de requerir más de dos imágenes, favor de crear una carpeta independiente dentro del citado directorio.
+
 En el caso de requerir más de un archivo para su componente habrá de crear una carpeta con el nombre del componente y ahí ubicará los elementos requeridos, ya sea bajo controller y/o views.
 
 Como es el estándar de CI los modelos se ubican en `application/models`.
@@ -37,4 +39,11 @@ Todos los controladores deberán de heredar de My_Controller, ya que los mecanis
 class Plugin extends MY_Controller {}
 ```
 
-No heredar del mismo será motivo de rechazo en su aplicación.
+**No heredar del mismo será motivo de rechazo en su aplicación.**
+
+### Observaciones
+- No tendrá acceso directo a la base de datos, a menos de que le sea concedido a través de un convenio directo con MarketSync
+- El intento de acceso directo a la base de datos, sin la autorización correspondiente,le generará sanciones y/o revocación de cuenta.
+- Los accesos a la base de datos se realizan a través de la [API](https://github.com/hvalles/marketsync).
+- Solamente podrá acceder a aquellas cuentas a las que el usuario responsable le otorgue acceso.
+
