@@ -1,5 +1,7 @@
 # Proceso de registro
 
+Como requisito inicial, deberá de contar con una cuenta de Cliente en MarketSync, además de contar con un juego de llaves públicas/privadas de conexión con la API de MarketSync. Es fundamental tener conocimiento del funcionamiento de la [API](https://github.com/hvalles/marketsync) y sus llamadas para poder utilizarla en la elaboración de los componentes.
+
 Para dar de alta tu repositorio tienes que solicitarlo a la siguiente dirección de correo
 info@marketsync.mx.
 

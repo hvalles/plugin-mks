@@ -2,6 +2,9 @@
 
 En general el código esta desarrollado en PHP 7+ y el framework que se utiliza es 3.1.10. Puedes encontrar la documentación del mismo en el siguiente [enlace](https://codeigniter.com/user_guide/), se utiliza el patrón de diseño MVC para facilitar la separación de código.
 
+No se incliuyen los fuentes del framework, los puede descargar de [aquí](https://codeigniter.com/download), recuerde que es la versión 3 la que se utiliza.
+
+El estándar de desarrollo que se utilizará para la generación de componentes es el [PSR-12](https://www.php-fig.org/psr/psr-12/), favor de seguir sus lineamentos.
 
 ### Inicio de flujo
 La estructura comienza en la carpeta public, en donde se localiza el index.php.
