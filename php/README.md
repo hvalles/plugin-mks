@@ -19,3 +19,30 @@ El siguiente ejemplo se basa en un componente que permite actualizar el registro
 
 **Salida Adicional**
 - Una orden de republicación de todos los productos ya registrados en el MarketPlace.
+
+### Flujo
+
+Su componente deberá heredar de [Plugin](https://github.com/hvalles/plugin-mks/blob/master/php/application/controllers/plugins/Plugin.php), este a su vez ya hereda de MY_Controller e implementará los elementos de seguridad,
+necesaris para su operación.
+
+La mayoría de las operaciones se realiza en Plugin, pero usted puede sobreescribir las siguients funciones:
+- `protected function pre_run() {` Esta funcion de inicialización se corre al entrar al index, pero antes de publicar la vista.
+- `public function run() {` El componente ejecutará la función index(), hay dos posibles escenarios: 
+    - Si no se encuentra registrado se desplegará la vista de registro ya sea con los "campos_registro" o vista "vista_registro", que especifico al dar de alta el componente.
+    - Si el componente ya se encuentra registrado para el cliente, 
+desplegará la vista que alimento en "vista" o la vista predeterminada con la información contenida en "campos"
+
+- `public function register() {` 
+Ambas vistas dispondran de los datos de registrados al dar de alta el ["plugin"](https://github.com/hvalles/plugin-mks/blob/master/docs/registro.md)
+
+Al momento de registrarse se debe ejecutar la función "register", llamando al padre si esta es rescrita.
+
+Elmomento de ejecutar la vista principal se ejecutará la función run(), por lo que aqui validará los elementos que considere necesarios y emitirá el resultado correspondiente, será la función principal.
+
+### Llamadas a la API
+
+- Para probar usted contará con sus propias llaves publicas/privadas.
+- En caso de producción, se tomará la información del cliente y de la base de datos.
+
+
+Puede ver el código en el siguiente [enlace](https://github.com/hvalles/plugin-mks/blob/master/php/application/controllers/plugins/Firmaficha.php)
