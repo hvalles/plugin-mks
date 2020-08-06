@@ -27,6 +27,13 @@ interface iMarketPlace {
     // const MARKETID = 100;
     const NOT_IMPLEMENTED = -1; 
 
+
+    // Función que verifica la viabilidad actual del API
+    // En el MarketPlace determinado
+    // Devuelve TRUE en caso de estar activo
+    // FALSE si no es así, ade
+    public function getStatus();
+
     // Función de entrada, siempre será ejecutada
     // El cliente serà utilizado para obtener la
     // configuración de conexión y las llaves
@@ -40,7 +47,7 @@ interface iMarketPlace {
     // El servidor debio de ser cargado en SignIt desde la configuración
     // En este punto se valida la caducidad del Token y se manda a llamar refresh 
     // de ser necesario.
-    public function getURL($modulo);
+    public function getURL($modulo, $parameters=[]);
 
     // Devolverá un arreglo de categorías, directamente del MarketPlace,
     // a partir del id especificado.
@@ -148,6 +155,13 @@ interface iMarketPlace {
     // addBitacora($data);
     public function getGuias($pedidos);
 
+    // Algunos MarketPlaces se les tiene que indicar la guía, ya que ellos no la proporcionan
+    // Esta función agregarña la guía al marketplace en a referencia correspondiente
+    // Por cada actualización llamar en Auxiliar a:
+    // uoloadGuia($data);
+    // addBitacora($data);
+    public function postGuia($pedido);
+
     // Solicita un listado de los últimos pedidos actualizados
     // la cantidad de pedidos esta definida por limit y el offset indica los pedidos a saltar.
     // Si la referencia es válida, solamente traera el pedido que la referencia indica, independientemente 
@@ -160,6 +174,28 @@ interface iMarketPlace {
     // El detalle del pedido será identificado por medio del sku [getSkuId($sku)] y se almacenara 
     // en la llamada enunciada arriba.
     public function getPedidos($referencia='', $save=FALSE, $limit=50, $offset=0, $estatus='');
+
+
+
+    public function getDeals($id=0, $limit=50, $offset=0);
+    public function postDeal($id, $items);
+    public function putDeal($id, $items);
+
+    public function getFeed($id=0);
+
+    public function postImagenes();
+
+    public function putImagenes();
+
+    public function getDocumento($documento, $referencia);
+
+    public function getFulFillment($save=FALSE);
+
+    public function requestReport($tipo, $data);
+
+    public function getRequestStatus($tipo, $id, $data=[]);
+
+    public function getReport($id, $data=[]);
 
 }
 
