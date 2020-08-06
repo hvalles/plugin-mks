@@ -56,8 +56,7 @@ class Firmaficha extends Plugin {
     // Secion de funcionalidad particular del componente
     // Puedes declarar tus propias funciones y vistas a llamar a partir de aquí
     public function show($market) {
-        $url = site_url("api/settings");
-        //$url=str_replace(':5000',':4000',$url);
+        $url = $this->server_api . "api/settings";
         $parameters = array(
             "market" => (int)$market,
             "grupo"  => 'production',

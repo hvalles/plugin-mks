@@ -14,6 +14,8 @@ class Plugin extends MY_Controller {
         // Send data previously stored
         $this->data['before'] = null;
         $this->keys = [];
+        // modificar con su servidor y puerto
+        $this->server_api = 'http://sandbox.marketsync.mx/';
 
         $this->data['plugin'] = $this->loadPlugin();
         $this->data['settings'] = $this->loadSettings();

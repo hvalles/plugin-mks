@@ -2,7 +2,11 @@
 <h4><?= $title ?></h4>
 <?php if (isset($_SESSION['success']) && ($_SESSION['success'])): ?>
     <div class="alert alert-success"><?= $_SESSION['success'] ?></div>
-<?php endif; ?>
+    <?php 
+      unset($_SESSION['success']);
+      endif; 
+?>
+
 
 <?php if(isset($plugin)) {?>
     <div class="mt-3 w-100"><img class="float-right img-thumbnail" width="100px" src="<?= $plugin->image ?>" alt=""></div>
