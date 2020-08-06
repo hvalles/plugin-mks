@@ -64,9 +64,15 @@ class Plugin extends MY_Controller {
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
         if ($data)
             curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query($data));
+        error_log($url);
         $response = curl_exec($ch);
         
-        if (!$response) return FALSE;
+        if (!$response) {
+            error_log(str(curl_error ( $ch )));
+            curl_close($ch);
+            return FALSE;
+        }
+        curl_close($ch);
         return json_decode($response);
     }
 
@@ -75,7 +81,7 @@ class Plugin extends MY_Controller {
     private function getKeys() {
         if (!$this->keys) {
             $this->keys['token'] = ''; // YOUR TOKEN
-            $this->keys['private'] = '' // YOUR PRIVATE KEY;
+            $this->keys['private'] = ''; // YOUR PRIVATE KEY;
         }
         return $this->keys;
     }
