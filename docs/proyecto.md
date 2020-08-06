@@ -40,6 +40,9 @@ Todos los controladores deberán de heredar de My_Controller, ya que los mecanis
 
 ```php
 class Plugin extends MY_Controller {}
+
+// Tu puedes heredar directamene de Plugin
+
 ```
 
 **No heredar del mismo será motivo de rechazo en su aplicación.**

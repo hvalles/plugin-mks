@@ -12,12 +12,21 @@ Adjuntando la siguiente información:
 - **Nombre** Nombre del plugin/aplicación 30 caracteres máximo
 - **Autor** Empresa o individuo que genera el componente.
 - **Descripción** Descripción detallada de lo que el componente realiza y la funcionalidad que agrega a la plataforma.
-- **Instrucciones** Instrucciones (HTML) de intalación del componente.
-- **Campos** (opcional) Arreglo JSON que permite desplegar, una forma en el componente para recabar información del usuario final.
-- **Vista** En caso de que la información a desplegar sea muy compleja se omite la sección de campos y se agrega el nombre de la bista a desplegar.
+- **Instrucciones** Instrucciones (HTML) de instalación del componente.
+- **Campos** (opcional) Arreglo JSON que permite desplegar una forma en el componente para si ejecución.
+- **Campos_registro** (opcional) Arreglo JSON que permite desplegar una forma en el componente para recabar información del usuario final.
+- **Categoria** Categoría en la que radica el Plugin, contacte a MaerketSync para una lista. 
+    - MarketPlace 
+    - Stock
+    - e-commerce
+    - Publicar
+    - Imagen
+- **Vista** En caso de que la información a desplegar sea muy compleja se omite la sección de campos y se agrega el nombre de la vista a desplegar.
+- **Vista_registro** En caso de que la información a recolectar sea muy compleja se omite la sección de campos y se agrega el nombre de la vista a desplegar en el registro.
+
 - **Imagen** Adjuntar una imagen relacionada al componente. 
 
-Cuando se reciba la información, pasará cerca de una seman, y s ele responderá ya sea confirmandole el nombre del compoenente o asignándole uno nuevo, similar al original o en si defecto la notificación de rechazo así como las causas.
+Cuando se reciba la información, pasará cerca de una seman, y le responderán ya sea confirmandole el nombre del compoenente o asignándole uno nuevo, similar al original o en si defecto la notificación de rechazo así como las causas.
 
 ## Información adicional
 - Arreglo JSON de [componentes](forma.md)
