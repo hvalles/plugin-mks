@@ -29,6 +29,28 @@
  4. Se carga relación Padre - Hijo y se cambia el estatus a ITEM_CONFIRMADO
  5. Si el producto esta detenido por alguna otra razón pasa estatus a ITEM_PENDIENTE.
 
+### Precios
+ Los precios ya incluyen impuestos, se espera que el MarketPlace lo publique como tal y
+ que no cargue impuestos adicionales
+
+ ### Descripciones
+  Normalmente el MarketPlace solamente tiene un campo de nombre y uno de ficha técnica, si no hay 
+  espacio especificado para [Descripción, Bullets]
+  - Se concatenará al final de la ficha técnica pasando un salto de línea o su equivalente en HTML.
+  - Si el MarketPlacec acepta caracteres HTML, los bullets serán enmarcados en un lista no ordenada <ul> 
+  - Si no admiten carácteres especiales o HTML, se tendrá que limpiar de estos caracteres antes de enviar
+  la petición de guardar el producto.
+  - Invariablemente todos los MarketPlaces pueden tener un pie de ficha, que es el mismo para todos los
+  productos Auxiliar getFirma() y este será concatenado al final de la ficha con las mismas restricciones preestablecidas.
+  - Si por alguna razón el total de la ficha o nombre excede las dimensiones de los campos, serán truncadas a la última palabra completa del campo, que no rebase la restricción de longitud.
+
+  ### Imágenes
+  Los Marketplaces podrán generar identificadores independientes para las imágenes, hay que revisar esto para gregarlos al arreglo que inserta/actualiza las imágenes correspondientes.
+
+  ### UPC/EAN
+  Los MarketPlaces pueden tener restricciones que indiquen que se requiere un UPC/EAN válido para aprobar la publicación, cuando mande llamar el listado de productos a publicar debe de especificar el filtro $gtin=TRUE,
+  para excluir los que no cumplan con el criterio.
+
  ```php
 interface iMarketPlace {`
 
