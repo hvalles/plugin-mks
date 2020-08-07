@@ -44,7 +44,27 @@ class Plugin extends MY_Controller {}
 // Tu puedes heredar directamene de Plugin
 
 ```
-
+├── application
+│   ├── controllers
+│   │   └── plugins
+│   │       ├── Firmaficha.php
+│   │       └── Plugin.php
+│   ├── core
+│   │   └── MY_Controller.php
+│   ├── helpers
+│   │   └── autoform_helper.php
+│   ├── libraries
+│   │   └── Market.php
+│   └── views
+│       └── plugins
+│           ├── plugin.php
+│           └── register.php
+└── public
+    └── static
+        └── img
+            └── imagenes
+                └── no-image.png
+                
 **No heredar del mismo será motivo de rechazo en su aplicación.**
 
 ### Observaciones
