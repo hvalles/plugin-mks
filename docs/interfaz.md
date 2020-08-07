@@ -36,20 +36,32 @@
  ### Descripciones
   Normalmente el MarketPlace solamente tiene un campo de nombre y uno de ficha técnica, si no hay 
   espacio especificado para [Descripción, Bullets]
-  - Se concatenará al final de la ficha técnica pasando un salto de línea o su equivalente en HTML.
+  - Se concatenarán (descripción y bullets) al final de la ficha técnica pasando un salto de línea 
+  o su equivalente en HTML.
   - Si el MarketPlacec acepta caracteres HTML, los bullets serán enmarcados en un lista no ordenada <ul> 
-  - Si no admiten carácteres especiales o HTML, se tendrá que limpiar de estos caracteres antes de enviar
+  - Si no admiten carácteres especiales o HTML, se tendrá que limpiar de estos caracteres y agregar los saltos de línea correspondientes, antes de enviar
   la petición de guardar el producto.
   - Invariablemente todos los MarketPlaces pueden tener un pie de ficha, que es el mismo para todos los
   productos Auxiliar getFirma() y este será concatenado al final de la ficha con las mismas restricciones preestablecidas.
   - Si por alguna razón el total de la ficha o nombre excede las dimensiones de los campos, serán truncadas a la última palabra completa del campo, que no rebase la restricción de longitud.
 
-  ### Imágenes
+### Imágenes
   Los Marketplaces podrán generar identificadores independientes para las imágenes, hay que revisar esto para gregarlos al arreglo que inserta/actualiza las imágenes correspondientes.
 
-  ### UPC/EAN
+### UPC/EAN
   Los MarketPlaces pueden tener restricciones que indiquen que se requiere un UPC/EAN válido para aprobar la publicación, cuando mande llamar el listado de productos a publicar debe de especificar el filtro $gtin=TRUE,
   para excluir los que no cumplan con el criterio.
+
+### Mapeo de Atributos
+  El MarketPlace contará con su propia lista de atributos, los atributos usualmente van a diferir en el nombre
+  entre MPS, por lo que al registrar el atributo anexará al campo mapa, la lista de atributos que reulten equivalentes ejemplo:
+  - El atribito es SIZE
+  - Sin embargo en los atributos estandar se le conoce como SIZE, FLAT_SIZE, WEAR_SIZE, etc.
+  - El mapero sera una cadena de la siguiente forma "SIZE,%_SIZE"
+  - Los posibles atributos serán separados por coma al llenar el valor de los atributos en su librería
+Enviará a la función Auxiliar el equivalente y la función regresará el primer valor que se localice la condición establecida (es decir si el atributo existe y tiene valor ese será).
+  - Para el caso de los atributos que comiencen con '%' este se utilizara como comodín para la búsqueda de posibles valores.
+  
 
  ```php
 interface iMarketPlace {`
