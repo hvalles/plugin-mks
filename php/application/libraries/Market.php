@@ -41,7 +41,8 @@ interface iMarketPlace {
     const ITEM_CONFIRMADO = 1; 
     const ITEM_SIN_IMAGEN = 98; 
     const ITEM_SIN_RELACION = 97; 
-    const ITEM_PENDIENTE = 99; 
+    const ITEM_PENDIENTE = 96; 
+    const ITEM_SIN_PUBLICAR = -1; 
 
     // Estatus de Requests
     const REQUEST_CANCEL = 0;

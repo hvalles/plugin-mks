@@ -77,7 +77,8 @@ interface iMarketPlace {`
     const ITEM_CONFIRMADO = 1; 
     const ITEM_SIN_IMAGEN = 98; 
     const ITEM_SIN_RELACION = 97; 
-    const ITEM_PENDIENTE = 99; 
+    const ITEM_PENDIENTE = 96; 
+    const ITEM_SIN_PUBLICAR = -1; 
 
     // Estatus de Requests
     const REQUEST_CANCEL = 0;
@@ -108,8 +109,8 @@ interface iMarketPlace {`
  configuración de conexión y las llaves
  Esta llamada se realiza siempre antes de inciar la primer consulta
  En Auxiliar debe de llamar 
-- setConfig($cliente, $market_id, $debug=FALSE);
-- El parametro $debug debe ser TRUE para sus pruebas.
+- setConfig();
+- Puede llamar a getConfig() para evisar los parámetros a configurar
 
 - `public  function SignIt($cliente);`
 
@@ -125,7 +126,7 @@ interface iMarketPlace {`
 
 ### Devolverá un arreglo de categorías, directamente del MarketPlace,
  a partir del id especificado.
- id del marketplacem en caso de ser $id=FALSE, se devolverán todas
+ id del marketplace, en caso de ser $id=FALSE, se devolverán todas
  Si el parametro $save es TRUE, se almacenarán haciendo un llamado 
  a la librería Auxiliar 
 - addCategoria($data)
@@ -142,8 +143,8 @@ pueden utilizarse para alimentar el valor del atributo.
 
 ### Devolverá un arreglo de colores, directamente del MarketPlace,
  Si el parametro $save es TRUE, se almacenarán haciendo un llamado 
- a la librería Auxiliar addColor($data), debe de especificar el color base 
- de cada color.
+ a la librería Auxiliar addColores($data), debe de especificar el color base 
+ de cada color. # Puede procesar en lotes.
 - Colores Base
    - AMARILLO, AZUL, BEIGE, BLANCO, CAFE, COBRE, FIUSHA, GRIS, MORADO,
    - MULTICOLOR, NARANJA, NEGRO, ORO, PLATA, ROJO, ROSA, VERDE
@@ -152,7 +153,7 @@ pueden utilizarse para alimentar el valor del atributo.
 ### Devolverá un arreglo de marcas disponibles directamente del MarketPlace,
  Si el parametro $save es TRUE, se almacenarán haciendo un llamado 
  a la librería Auxiliar 
-- addMarca($data).
+- addMarcas($data). # Puede procesar en lotes
 - `public  function getMarcas($save=FALSE);`
 
 ### Obtiene el producto desde el MarketPlace, 

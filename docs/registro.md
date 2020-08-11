@@ -26,6 +26,10 @@ Adjuntando la siguiente información:
 
 - **Imagen** Adjuntar una imagen relacionada al componente. 
 
+Ademas de incluir la cuenta de correo electrónico que será utilizada como usuario para conectarse a la  API,
+esta cuenta al terminar tendrá un rol de "consultor" y le brindará acceso únicamente a las APIS de integración
+de MarketPlaces.
+
 Cuando se reciba la información, pasará cerca de una seman, y le responderán ya sea confirmandole el nombre del compoenente o asignándole uno nuevo, similar al original o en si defecto la notificación de rechazo así como las causas.
 
 ## Información adicional
