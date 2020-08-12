@@ -8,9 +8,9 @@ class Precio {
     public $oferta;
     public $envio;
 
-    public $old_precio;
-    public $old_oferta;
-    public $old_envio;
+    public $previo_precio;
+    public $previo_oferta;
+    public $previo_envio;
 }
 
 ?>

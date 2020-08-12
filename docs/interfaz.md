@@ -1,8 +1,9 @@
 
 ## Librería de acoplamiento de Marketplaces a MarketSync
- Todas las librerías deberán de cumplir con la interface en lo posible.
+ Todas las librerías deberán de cumplir con la interfaz en lo posible.
  Las librerías hacen referencia a una librería auxiliar para movimientos 
- hacia la base de datos revise la especificación correspondiente en:
+ hacia la base de datos revise la especificación correspondiente en el
+ siguiente [enlace](auxiliar.md):
 
 ## Generalidades
  Todas las llamadas a menos de que se especifique otra cosa serán hacia 

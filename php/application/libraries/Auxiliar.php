@@ -21,7 +21,7 @@ class Auxiliar {
     public $requiere_color = FALSE; // Si es TRUE, las variaciones que no cuenten con el empate de color se excluiran
     public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lotes o de uno en uno
 
-    /* Fevuelve el registro de campos a configurar */
+    /* Devuelve el registro de campos a configurar */
     public function getConfig() {
         return array(
             'cliente' => $this->cliente,
@@ -77,7 +77,7 @@ class Auxiliar {
 
     /* Recibe un arreglo con la categoria a dar de alta
      y regresa la categoria registrada."
-        [   'id' => 0,
+        [   'id' => null,
             'categoria' => "Clave de Categoria en Market",
             'nombre'    => "Nombre de la categoria",
             'ruta'      => "/Abuelo/Padre/Hijo", # Arbol de categoria separado por Slash
@@ -95,7 +95,7 @@ class Auxiliar {
 
     /* Recibe arreglo con atributo
         $atr = [
-            'id'           => 0, // Identificador de atributo
+            'id'           => null, // Identificador de atributo
             'categoria_id' => 1001, // Identificador de categoría a la que pertenece el atributo
             'atributo'     => 'GENDER', // Clave del atributo en el marketplace
             'orden'        => 1, //Posicion del atributo en jerarquía 
@@ -120,7 +120,7 @@ class Auxiliar {
 
     /*
         $valor = [
-            'id'            => 0, // Identificador de registro
+            'id'            => null, // Identificador de registro
             'key_id'        => 125, // Identificador de atributo 
             'clasificacion' =>  'valor', // etiqueta,unidad,valor
             'clave'         =>  '1253', // identificador del market para el valor  
@@ -139,7 +139,7 @@ class Auxiliar {
 
     /*  Solo inserta
         [
-            'id'        => 0, // identificador de registro
+            'id'        => null, // identificador de registro
             'evento_id' => 1, // Entero de 1-7
             'seccion'   => 'productos', // Tabla por afectar
             'row_id'    => 265, // Identificador de registro afectado (id de producto en este caso)  
@@ -168,7 +168,7 @@ class Auxiliar {
 
     /*
     [   
-        'id'            => 0, // Identificador de registro
+        'id'            => null, // Identificador de registro
         'product_id'    => 12536, // Identificador de producto
         'precio'        => 1000.00,// Precio de lista
         'oferta'        => 800.00, // Precio oferta
@@ -193,6 +193,18 @@ class Auxiliar {
         $this->checkData($data, $fields);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
+    /* Obtiene el listado de productos de acuerdo al estatus
+    */
+    public function getProductos($estatus=-1, $id=0) {
+        $estatus = (int)$estatus;
+        $id = (int)$id;
+        $url = $this->server . "productos";
+        $this->checkData($data, $fields);
+        $params = ['market_id'=>$this->market, 'filtro'=>$estatus];
+        $res = callAPI($url, "GET", $this->publica, $this->privada, $params, $data);
         return json_decode($res);
     }
 
@@ -228,7 +240,7 @@ class Auxiliar {
     }
 
     /* 
-    'id'            => 0,           // Identificador de registro
+    'id'            => null,           // Identificador de registro
     'product_id'    => 1253,        // Identificador de producto
     'sku'           => '58369-250', // Sku hijo
     'stock_id'      => 1263001,     // Identificador de variacion
@@ -246,7 +258,7 @@ class Auxiliar {
     }
 
     /* Solo agregue los campos que vaya a actualizar y el "id"
-    'id'            => 0,           // Identificador de registro
+    'id'            => 125630,           // Identificador de registro
     'market_sku'    => '145236985221', // Identificador de registro en MPS
     'referencia'    => '14521411141',  // Identificador de registro auxiliar en MPS
     'stock'         => 0 // Stock registrado
@@ -260,9 +272,50 @@ class Auxiliar {
         return json_decode($res);
     }
 
+  /* 
+      [ 'id'          => null,  // Identificador de registro
+        'product_id'  => 1235,  // Identificador de producto,
+        'sku'         => '1280',// Sku hijo SellerSku
+        'orden'       => 1,     // Entero del 1 al 6 con el # de imagen
+        'id_mkt'      => '',    // En caso de aplicar se llenara con el hash de la imagen en MarketPlace
+        'url'         => 'http://myempresa.com/imagenes/1280-1.jpg'
+    ];
+    */
+    public function addImagen($data) {
+        $url = $this->server . "imagens";
+        $fields = ['id','market_id','product_id','sku','orden','id_mkt', 'url'];
+        $this->checkData($data, $fields);
+        $params = ['market_id'=>$this->market];
+        $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
+
+   /* Agregue todos los campos para actualizar
+    [   'id'          => 513698,  // Identificador de registro
+        'id_mkt'      => '',    // En caso de aplicar se llenara con el hash de la imagen en MarketPlace
+        'url'         => 'http://myempresa.com/imagenes/1280-1a.jpg'
+    ];
+  
+    */
+    public function updImagen($data) {
+        $url = $this->server . "imagenes";
+        $fields = ['id','id_mkt', 'url'];
+        $this->checkData($data, ['id']);
+        $params = ['market_id'=>$this->market];
+        $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
 
     // Funcion de comprobacion de columnas
     private function checkData($data, $fields) {
+        if (!$this->market)
+            throw new Exception('Settings are not configured.');
+
+        if (!$this->privada || !$this->publica)
+            throw new Exception('Keys are not configured.');
+
         if (!is_array($data) || !is_array($data[0])) 
             throw new Exception('An Array of arrays was expected.');
         

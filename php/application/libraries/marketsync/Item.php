@@ -23,14 +23,14 @@ class Item {
     // Elementos Externos
     public $atributos = []; // Atributios del producto
     public $variaciones = [];
-    public $video;
+    public $producto_market = null; // Registro de  parent sku por market en Marketsync
     public $categoria_mkt; // Categoria del MarketPlace
     public $precios;  // Precio del producto en el Market
     public $variacion_tipo; // SIZE, COLOR, PATTERN, ETC.
     public $variacion_atr; // ATRIBUTO QUE DETERMINA LA VARIACION 
 
     // Elementos Adicionales
-    public $condicion; // Por ahora solamente nuevos
+    public $p_condition; // Por ahora solamente nuevos
     public $warranty;  // Garantía     
     public $date_created;
     public $parent_sku;  // En caso de que algun hijo deba de ser el padre
