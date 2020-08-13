@@ -148,19 +148,21 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 - `public function addProducto($data)`
 
 ####  Obtiene el listado de productos de acuerdo al estatus
-- `public function getProductos($estatus=-1, $id=0)`
+- `public function getProductos($estatus=-1, $id=0, $limit=100)`
 
 #### Actualización de productos
 - Solo agregue los campos que vaya a actualizar y el "id"
 ```php
     [
         'id'            => 1250360, // Identificador de registro
+        'product_id'    => 54361, // Identificador de producto
         'precio'        => 1000.00,// Precio de lista
         'oferta'        => 800.00, // Precio oferta
         'envio'         => 65.00,  // Precio de envío
         'market_sku'    => 'MLM25369822', // Identificador del MarketPlace
-        'transaction_id'=> 0, // Identificador de registro entero
+        'transaction_id'=> 0, // Identificador de registro de MPS entero
         'referencia'    => 'https://market.com/id=145151', // Url del producto en el marketplace
+        'fulfillment'   => 0, //  1 en caso de ser fulfillment
         'estatus'       = 1
     ];
     // Posibles estatus
@@ -172,6 +174,11 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
     const ITEM_SIN_PUBLICAR = -1; 
 ```
 - `public function updProducto($data)`
+
+#### Eliminar producto 
+- Elimina el registro del producto y del stock 
+- Devuelve resumen de registros eliminados
+- `public function delProducto($id)`
 
 #### Registro de Stock
 - Arreglo a enviar
@@ -200,8 +207,11 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 - Regresa registro actualizado
 - `public function updStock($data)`
 
+#### Elimina el registro del stock 
+- `public function delStock($id)`
+
 #### Registro de imágenes
-- Revibre arreglo
+- Recibre arreglo
 ```php
       [ 'id'          => null,  // Identificador de registro
         'product_id'  => 1235,  // Identificador de producto,
@@ -215,7 +225,7 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 - `public function addImagen($data)`
 
 #### Actualización de imágenes
-- Revibe arreglo por actulizar
+- Recibe arreglo por actulizar
 ```php
    /* Agregue todos los campos para actualizar */
     [   'id'          => 513698,  // Identificador de registro
@@ -225,3 +235,111 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 ```
 - Devuelve registro actualizado
 - `public function updImagen($data)`
+
+#### Elimina el registro del imagen 
+- `public function delImagen($id)`
+
+####  Agrega registro de guias
+- Recibe arreglo
+```php
+    [
+        'id' => null, //Identificador de registro
+        'pedido_id' => 25692, // Identificador de pedido 
+        'label'     => '', // Contenifo binariomen base64 de imagen o archivo de guia      
+        'guia'      => '125368555', // Número de guía
+        'mensajeria'=> 'Fedex', // Paquetería
+        'estatus'   => 1
+    ];
+```
+- Devuelve registro insertado
+- `public function addGuia($data)`
+
+
+#### Agrega registro de pedidos
+- Recibe arreglo
+```php
+    ['id'   =>null,   //Identificador de registro
+    'referencia'=>,   // Pedido en el MarketPlace 
+    'fecha_pedido'=>, // YYYY-MM-DD HH:mm:ss (Formato de 24 hrs)   fecha de creación del pedido
+    'fecha_autoriza'=>,   // YYYY-MM-DD HH:mm:ss (Formato de 24 hrs)   fecha de autorizacion del pedido
+    'email'=>  'none@mymarket.com',   
+    'entregara'=> 'Ulises Rendon Martinez',    // Aquien se dirige el pedido
+    'telefono'=> '',    // 81 5536-2589
+    'direccion'=> 'Fuentes Verdes # 1250',    
+    'entrecalles'=> 'Cruz con Papagayos' ,    
+    'colonia'=>     'La esperancita',    
+    'ciudad'=>      'De Los Cabos',   
+    'estado'=>      'Baja California Sur',    
+    'observacione'=>,  'Puerta Negra, segundo piso' 
+    'cp'=>    52896,    
+    'envio'=> 95.50,  // Costo de envío en caso de que MPS venda la guia  
+    'comision'=> 60.00,   // Cargo que realiza el MPS por servicio
+    'estatus'=> 'OPEN', // Estatus tal cual viene en el MPS    
+    'shipping_id'=> null,    // Aplica para los MPS q¡ue no agrupan los items en un solo pedido
+    'detalle'=> [...],   // Arreglo con lineas de pedido por actualizar
+    ]
+
+    // Detalle de pedido
+    ['sku' => '1258',    // Sku hijo, sellersku
+    'descripcion'=> 'Pintura Berel Verde Esmaltado 4lts',   // Descripcion del producto
+    'cantidad'=> 1,   // Cantidad vendida
+    'precio'=>  2500.00,   // Precio de venta sin iva
+    'color'=> 'Verde',  // Color del producto o variedad
+    'talla'=> '4 Lts',    // Medida de la variacion
+    'referencia'=> '2536985441',    // identificador de registro en el MarketPlace
+    'fulfillment'=> 0 // Si el prodsucto se encuentra en fulfillment  
+    ]
+
+```
+- `public function addPedidos($data)`
+- Devuelve registro creado
+
+####  Atualiza registro de pedido
+- Recibe arreglo
+```php
+    [
+        $id => 56822, // identificador de pedido
+        $estatus => 'PAID', // Estatus del marketplace
+        $total => 0, // Monto en caso de devolución
+        $pedido_mkt, // Cuando es e-commerce (Shopify) al grabar el pedido devuelve su identificador
+    ]
+```
+- Regresaimag registro actualizado
+- `public function updPedido($id, $estatus, $total=0, $pedido_mkt=null) `  
+
+#### Obtiene pedidos registrador
+```php
+    /* Regresa pedidos 
+    POSIBLES FILTROS
+    0 // Todos Los últimos $limit registros en orden descendente por fecha de actualización
+    PEDIDO_NOREPORTADO // Pedidos que no han sido reportados al e-commerce para si generación
+    PEDIDO_CAMBIO  // Pedidos que actualizaron el 
+    */
+```
+- `public function getPedidos($filtro=0,$limit=50)`
+
+#### Registra feed en caso  de procesamiento en lote 
+```php
+    [
+        'id' => null, // identificador de registro
+        'feed' => '2535-25352-2533', // Identificador de registro en MPS
+        'request' => '<xml>....</xml>' // Texto con peticion 
+    ]
+```
+- Regresa registro insertado
+- ` public function addFeed($data) `
+
+
+#### Actualiza feed con respuesta en caso  de procesamiento en lote 
+```php
+    [
+        'id' => null, // identificador de registro
+        'answer' => '<xml>....</xml>' // Texto con peticion 
+    ]
+```
+- Regresa registro actualizado
+- `public function updFeed($id, $answer)`
+
+#### Obtiene feeds que aun no han sido marcados como concluidos 
+- `public function getFeeds($limit=50)`
+- Devuelve listado de feeds sin actualizar

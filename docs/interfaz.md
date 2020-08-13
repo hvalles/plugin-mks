@@ -71,15 +71,23 @@ interface iMarketPlace {`
     ### DEBE DE DECLARAR UNA CONSTANTE CON EL MARKETID ASIGNADO EN SU LIBRERIA
     ### const MARKETID = 100;
 
-
-    // Estatus de producto
+    // Devolución de funciones no impementadas
     const NOT_IMPLEMENTED = -1; 
+
+    // Estatus de producto    
     const ITEM_SIN_CONFIRMAR = 99; 
     const ITEM_CONFIRMADO = 1; 
     const ITEM_SIN_IMAGEN = 98; 
     const ITEM_SIN_RELACION = 97; 
     const ITEM_PENDIENTE = 96; 
     const ITEM_SIN_PUBLICAR = -1; 
+    const ITEM_DESHABILITADO = -2; 
+
+    const ITEM_NOMBRE_CAMBIO = 2; 
+    const ITEM_PRECIO_CAMBIO = 4; 
+    const ITEM_STOCK_CAMBIO = 8; 
+    const ITEM_IMAGEN_CAMBIO = 16; 
+    const ITEM_VARIACION = 32; 
 
     // Estatus de Requests
     const REQUEST_CANCEL = 0;
@@ -98,6 +106,11 @@ interface iMarketPlace {`
     const PEDIDO_ENTREGADO = 3;
     const PEDIDO_DEVUELTO = -1;
     const PEDIDO_REFUNDED = -2; // DINERO REINTEGRADO
+    const PEDIDO_NOREPORTADO = 32;   // PEDIDOS QUE NO HAN SIFO REPORTADOS AL E-COMMERCE
+    const PEDIDO_CAMBIO = 64;   // PEDIDOS CUYO ESTATUS FUE ACTUALIZADO
+    const FEEDS_AGREGAR = 1;
+    const FEEDS_ACTUALIZAR = 2;
+
 ```
 ### Función que verifica la viabilidad actual del API
  En el MarketPlace determinado
@@ -110,7 +123,7 @@ interface iMarketPlace {`
  configuración de conexión y las llaves
  Esta llamada se realiza siempre antes de inciar la primer consulta
  En Auxiliar debe de llamar 
-- setConfig();
+- setConfig($data);
 - Puede llamar a getConfig() para evisar los parámetros a configurar
 
 - `public  function SignIt($cliente);`
@@ -184,58 +197,64 @@ pueden utilizarse para alimentar el valor del atributo.
  Se deberá de crear un Producto por cada hijo, siendo el sku del hijo el que se registre.
  y se deberán hacer sus llamadas correspondientes a addProducto y addStock
 
-- Auxiliar publicarItems($limit=100); Para obtener un listado de productos sin publicar
+- Auxiliar getProductos($estatus=iMarketPlace::ITEM_SIN_PUBLICAR); 
+Para obtener un listado de a lo más 100 productos sin publicar
 - `public  function postProductos();`
 
 ### Llegará un listado de productos por actualizar y se hará las llamadas correspondientes
  de los datos del producto, descripción y atributos.
- actualizarItems($limit=100); Para obtener un listado de productos ya publicados por actualizar
+ getProductos($estatus=iMarketPlace::ITEM_NOMBRE_CAMBIO); 
+ Para obtener un listado de productos ya publicados por actualizar
  Por cada actualización llamar en Auxiliar a:
-- updateProducto($data);
+- updProducto($data);
 - addBitacora($data);
 - `public  function putProductos();`
 
 ### Recibe un arreglo de productos por cerrar su publicación r y hace las llamadas correspondientes
  Por cada actualización llamar en Auxiliar a:
-- disbleProducto($data);
+- updProducto($data); // estatus ITEM_DESHABILITADO
 - addBitacora($data);
 - `public  function disableProductos($item);`
 
 ### Recibe un arreglo de productos por abrir su publicación r y hace las llamadas correspondientes
  Por cada actualización llamar en Auxiliar a:
-- enableProducto($data);
+- updProducto($data); // El estatus correspondiente
 - addBitacora($data);
 - `public  function enableProductos($item);`
 
 ### Recibe un arreglo de productos por eliminar y hace las llamadas correspondientes
  Por cada eliminación llamar en Auxiliar a:
-- removeProducto($data);
+- delProducto($data);
 - addBitacora($data);
 - `public  function deleteProductos($item);`
+- Esta función eliminará la tabla secundria de Stock del producto y de las imagenes registradas
 
 ### Solicita los productos por actualizar precio y realiza las llamadas correspondientes al MarketPlace
- actualizarPrecios($limit=100); Para obtener un listado de productos ya publicados con precios por actualizar.
+ getProductos($estatus=iMarketPlace::ITEM_PRECIO_CAMBIO); 
+ Para obtener un listado de productos ya publicados con precios por actualizar.
  Por cada actualización llamar en Auxiliar a:
-- updatePrecio($data);
+- updProducto($data); // Campos de precio cambiados y el id
 - addBitacora($data);
 - `public  function putPrecio();`
 
 ### Solicita los productos por actualizar Stock y realiza las llamadas correspondientes al MarketPlace
- actualizarPrecios($limit=100); Para obtener un listado de productos ya publicados con precios por actualizar.
+ getProductos($estatus=iMarketPlace::ITEM_STOCK_CAMBIO); 
+  Para obtener un listado de productos ya publicados con precios por actualizar.
  Por cada actualización llamar en Auxiliar a:
-- updateStock($data);
+- updStock($data);
 - addBitacora($data);
 - `public  function putStock();`
 
 ### Solicita los productos que tengan Variaciones nuevas y realiza las llamadas correspondientes al MarketPlace
- actualizarVariaciones($limit=100); Para obtener un listado de productos ya publicados con precios por actualizar.
+ getProductos($estatus=iMarketPlace::ITEM_VARIACION); 
+ Para obtener un listado de productos ya publicados con precios por actualizar.
  Por cada actualización llamar en Auxiliar a:
 - addStock($data);
 - addBitacora($data);
 - `public  function postVariaciones();`
 
-### Recibe el registro de la variacion a eliminar, asì como el producto del marketplace.
- Llamará al MPL para eliminar dicha variación 
+### Recibe el registro de la variacion a eliminar, así como el producto del marketplace.
+ Llamará al MPS para eliminar dicha variación 
  Por cada eliminación llamar en Auxiliar a:
 - delStock($data);
 - addBitacora($data);
@@ -248,17 +267,17 @@ pueden utilizarse para alimentar el valor del atributo.
 - `public  function getGuias($pedidos);`
 
 ### Algunos MarketPlaces se les tiene que indicar la guía, ya que ellos no la proporcionan
- Esta función agregarña la guía al marketplace en a referencia correspondiente
+ Esta función agregará la guía al marketplace en a referencia correspondiente
  Por cada actualización llamar en Auxiliar a:
-- uploadGuia($data);
+- updGuia($id);
 - addBitacora($data);
-- `public  function postGuia($pedido, $data=[]);`
+- `public  function postGuia($pedido, $guia, $paqueteria);`
 
 ### Se actualiza la guía en caso de que haya que rectificar algún dato.
  Por cada actualización llamar en Auxiliar a:
-- uploadGuia($data);
+- updGuia($id);
 - addBitacora($data);
-- `public  function putGuia($pedido, $data=[]);`
+- `public  function putGuia($pedido, $guia, $paqueteria);`
 
 ### Solicita un listado de los últimos pedidos actualizados
  la cantidad de pedidos esta definida por limit y el offset indica los pedidos a saltar.
@@ -275,11 +294,11 @@ pueden utilizarse para alimentar el valor del atributo.
 
 
 ### Actualiza el estatus de una lista de pedidos en caso de cambio con respecto al pedido consultado.
- Llamada Auxiliar par obtener listado de pedidos getCurrentPedidos($limit=50)
+ Llamada Auxiliar para obtener listado de pedidos getPedidos($limit=50)
  Automáticamente limitara la llamada a los últimos 30 días o el limite explicito, 
  el orden será la fecha de creación del pedido
  Por cada actualización llamar en Auxiliar a:    
-- updateHistorial($data); // El estatus actualizado
+- updPedido($pedido, $estatus, $total=0, $pedido_mkt=null); // estatus actualizado
 - addBitacora($data);
 - `public  function getEstatusPedido();`
 
@@ -287,7 +306,7 @@ pueden utilizarse para alimentar el valor del atributo.
  generados en otros MarketPlaces
  getPedidos($limit); Devuelve los pedido que aun no han sido actualizados en el e-commerce.
  Por cada actualización llamar en Auxiliar a:
- updatePedido($pedido, $id); // Se spera un id entero (bigint)
+ updPedido($pedido, $estatus, $total=0, $pedido_mkt=null); // Se spera un id entero (bigint) en pedido_mkt
  addBitacora($data);
 - `public  function postPedidos();`
 
@@ -297,56 +316,86 @@ pueden utilizarse para alimentar el valor del atributo.
  han sido actualizados en el e-commerce.
  En la liosta de pedidos no vendrán registros e-commerce
  Por cada actualización llamar en Auxiliar a:
- updateHistorial($data); 
+- updPedido($pedido, $estatus, $total=0, $pedido_mkt=null);
  addBitacora($data);
 - `public  function putPedidos();`
 
-### Devuelve un arreglo con la lista de campañas a las que ha sido invitado
- si el parametro $save=TRUE, agregara los deals a través de la función
- Auxiliar addDeal($data);
-- `public  function getDeals($id=0, $save=FALSE, $limit=50, $offset=0);`
-
-### Recibe un Deal y agrega productos al mismo
- Por cada actualización llamar en Auxiliar a:
- addDealItem($id, $oferta); 
- addBitacora($data);
-- `public  function postDeal($id, $deals);`
-
-### Recibe un Deal y actualiza productos al mismo
- Por cada actualización llamar en Auxiliar a:
- updateDealItem($id, $oferta); 
- addBitacora($data);
-- `public  function putDeal($id, $items);`
+## Acción para autorizar el reintegro del pago al cliente
+ El $id es el pedido a devolver 
+ Por cada actualización llamar en Auxiliar a:    
+- updPedido($pedido, $estatus, $total=0, $pedido_mkt=null); // El estatus actualizado, total autorizado a devolver
+- addBitacora($data);
+- `public  function postRefundPedido($referencia, $data=[]);`
 
 ### Devuelve un arreglo con la lista de Feeds enviadas al MarketPlace,
  para realizar operaciones en el mismo.
  si el parametro $save=TRUE, agregará los feeds a través de la función
  Auxiliar addFeed($data);
- Si el $id es 0 arrojara una lista con los feeds de los últimos $dias.
-- `public  function getFeeds($id=0, $dias=15, $save=FALSE);`
+ Si el $filtro es 0 arrojara una lista con los feeds de los últimos $dias.
+ Si el $filtro no es cero, llamará a la funcion auxiliar getFeeds() par actualizar la respuesta
+ del feed
+- `public  function getFeeds($filtro=0, $dias=15, $save=FALSE);`
 
 ### Algunos MarketPlaces, reciben las imágenes en operaciones diferentes a la alta de productos
  Para esto el estatus de Alta en el Producto, 
- Auxiliar getItemByEstatus($estatus, $data); // Regresa un listado de productos con estatus ITEM_SIN_IMAGEN
+ Auxiliar  getProductos($estatus, $data); // Regresa un listado de productos con estatus ITEM_SIN_IMAGEN;
+ updProducto($data) // par actualizar estatus nuevo
+ addImagen($data), para agregar las imágenes cargadas.
 - `public  function postImagenes();`
 
 ### La actualización de los imágenes en Los MarketPlaces
- Se hará a través de esta función
- Auxiliar updateImagen($sku, $imagenes);
+Se obtiene los productos con imagenes por atualizar a traves de la funcion getProductos
+(iMarketPlace::ITEM_IMAGEN_CAMBIO), El registro se hará a través de esta función  Auxiliar updImagen($data);
 - `public  function putImagenes();`
 
 ### La recuperación de documentos del marketplace de los pedidos
- El documento podría set factura, nota de crédito, etc.
- el documento se almacenara en base64 y se llamará a la función auxuliar
+ El documento podría ser factura, nota de crédito, etc.
+ el documento se almacenara en base64 y se llamará a la función auxiliar
  addGuia($data);
  addBitacora($data);
 - `public  function getDocumento($documento, $referencia);`
 
 ### Se recibe un arreglo de productos que han sido declarados como fulfillment by Market
  Si el parámetro $save = TRUE
- El producto se declara como fulfillment
- addFulfillment($product_id)
+ El producto se declara como fulfillment con llamada auxiliar addFulfillment($product_id)
 - `public  function getFulFillment($save=FALSE);`
+
+### Obtiene un listado de Tickets/Preguntas que informa el MarketPkace.
+ Si el $id es diferente a "", devuelve el registro solicitado
+ Si el parámetro $save es TRUE hará una llamada auxiliar a saveTicket($data) y addBitacora($data)
+ El tipo indica si se solicita Ticket/Pregunta
+- `public  function getTickets($id="", $save=FALSE, $tipo='Ticket', $limit=50, $offset=0);`
+
+### Obtiene un listaado de Anuncios/Notificaciones/Actualizaciones/Otros que informa 
+ el MarketPkace.
+ Si el $id es diferente a "", devuelve el registro solicitado
+ Si el parámetro $save es TRUE hará una llamada auxiliar a saveNotifiction($data)
+ El tipo indica si se solicita Anuncio/Notificacion/Actualiacion/Otros
+- `public  function getNotifications($id="", $save=FALSE, $tipo='Anuncio', $limit=50, $offset=0);`
+
+### Envía una respuesta a una pregunta/ticket existente
+ $respuesta se enviara conjuntamente
+ En auxiliar llamara updateTicket($data) y addBitacora($data)
+- `public  function postTicket($id, $respuesta);`
+
+### Acción para cerrar un ticket abierto y marcarlo como resuelto
+ En auxiliar llamara updateTicket($data) estatus TICKET_CERRADO y addBitacora($data)
+- `public  function closeTicket($id, $data=[]);`
+
+### Acción para abrir un ticket cerrado y marcarlo como pendiente
+ En auxiliar llamara updateTicket($data) estatus TICKET_ABIERTO y addBitacora($data)
+- `public  function openTicket($id);`
+
+### Acción para escalar un ticket 
+ En auxiliar llamara updateTicket($data) estatus TICKET_ESCALADO y addBitacora($data)
+- `public  function escalateTicket($id, $data=[]);`
+
+
+### **************************************************************************
+### El resto de las llamadas, tienen poca probabilidad de existir en el market,
+### ya que son de naturaleza propia de ciertos MPS.
+### **************************************************************************
+
 
 ### Llamada a solicitar un reporte al Marketplace
  Normalmente regresa un id de la petición
@@ -405,39 +454,19 @@ pueden utilizarse para alimentar el valor del atributo.
  Devuelve arreglo json con la información
 - `public  function getShippingSettings($categoria='');`
 
-### Obtiene un listado de Tickets/Preguntas que informa el MarketPkace.
- Si el $id es diferente a "", devuelve el registro solicitado
- Si el parámetro $save es TRUE hará una llamada auxiliar a saveTicket($data) y addBitacora($data)
- El tipo indica si se solicita Ticket/Pregunta
-- `public  function getTickets($id="", $save=FALSE, $tipo='Ticket', $limit=50, $offset=0);`
+### Devuelve un arreglo con la lista de campañas a las que ha sido invitado
+ si el parametro $save=TRUE, agregara los deals a través de la función
+ Auxiliar addDeal($data);
+- `public  function getDeals($id=0, $save=FALSE, $limit=50, $offset=0);`
 
-### Obtiene un listaado de Anuncios/Notificaciones/Actualizaciones/Otros que informa 
- el MarketPkace.
- Si el $id es diferente a "", devuelve el registro solicitado
- Si el parámetro $save es TRUE hará una llamada auxiliar a saveNotifiction($data)
- El tipo indica si se solicita Anuncio/Notificacion/Actualiacion/Otros
-- `public  function getNotifications($id="", $save=FALSE, $tipo='Anuncio', $limit=50, $offset=0);`
+### Recibe un Deal y agrega productos al mismo
+ Por cada actualización llamar en Auxiliar a:
+ addDealItem($id, $oferta); 
+ addBitacora($data);
+- `public  function postDeal($id, $deals);`
 
-### Envía una respuesta a una pregunta/ticket existente
- $respuesta se enviara conjuntamente
- En auxiliar llamara updateTicket($data) y addBitacora($data)
-- `public  function postTicket($id, $respuesta);`
-
-### Acción para cerrar un ticket abierto y marcarlo como resuelto
- En auxiliar llamara updateTicket($data) estatus TICKET_CERRADO y addBitacora($data)
-- `public  function closeTicket($id, $data=[]);`
-
-### Acción para abrir un ticket cerrado y marcarlo como pendiente
- En auxiliar llamara updateTicket($data) estatus TICKET_ABIERTO y addBitacora($data)
-- `public  function openTicket($id);`
-
-### Acción para escalar un ticket 
- En auxiliar llamara updateTicket($data) estatus TICKET_ESCALADO y addBitacora($data)
-- `public  function escalateTicket($id, $data=[]);`
-
-## Acción para autorizar el reintegro del pago al cliente
- La $referencia es el pedido a devolver 
- Por cada actualización llamar en Auxiliar a:    
-- updateHistorial($data); // El estatus actualizado
-- addBitacora($data);
-- `public  function postRefundPedido($referencia, $data=[]);`
+### Recibe un Deal y actualiza productos al mismo
+ Por cada actualización llamar en Auxiliar a:
+ updateDealItem($id, $oferta); 
+ addBitacora($data);
+- `public  function putDeal($id, $items);`

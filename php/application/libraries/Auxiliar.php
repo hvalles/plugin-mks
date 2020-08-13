@@ -43,14 +43,7 @@ class Auxiliar {
         }
     }
 
-    /* Se espera arreglo de arreglos con no más de 50 elementos por vez
-        $marca = [[
-                'marca' => "nombre de la marca",
-                'marca_market' => "101253" // Identificador de marca o lo mismo que marca de no existir
-            ]
-        ];
-        Devuelve resumen de actualizaciones
-    */    
+    /* Se espera arreglo de arreglos con no más de 50 elementos por vez  */    
     public function addMarcas($data) {
         $url = $this->server . "marcas";
         $this->checkData($data, ['marca','marca_market']);
@@ -59,14 +52,7 @@ class Auxiliar {
         return json_decode($res);
     }
 
-    /* Se espera arreglo de arreglos con no más de 50 elementos por vez
-        $color = [[
-                'color_base' => "nombre de color",
-                'color_market' => "101253" // Identificador de color
-            ]
-        ];
-        Devuelve resumen de actualizaciones
-    */    
+    /* Se espera arreglo de arreglos con no más de 50 elementos por vez    */    
     public function addColores($data) {
         $url = $this->server . "colores";
         $this->checkData($data, ['color_base','color_market']);
@@ -75,16 +61,7 @@ class Auxiliar {
         return json_decode($res);
     }
 
-    /* Recibe un arreglo con la categoria a dar de alta
-     y regresa la categoria registrada."
-        [   'id' => null,
-            'categoria' => "Clave de Categoria en Market",
-            'nombre'    => "Nombre de la categoria",
-            'ruta'      => "/Abuelo/Padre/Hijo", # Arbol de categoria separado por Slash
-            'padre'     => "Clave de la categoria padre
-        ];
-        Devuelve el registro generado
-     */
+    /* Recibe un arreglo con la categoria a dar de alta y regresa la categoria registrada." */
     public function addCategoria($data) {
         $url = $this->server . "categorias";
         $this->checkData($data, ['id','categoria','nombre','ruta','padre']);
@@ -93,21 +70,7 @@ class Auxiliar {
         return json_decode($res);
     }
 
-    /* Recibe arreglo con atributo
-        $atr = [
-            'id'           => null, // Identificador de atributo
-            'categoria_id' => 1001, // Identificador de categoría a la que pertenece el atributo
-            'atributo'     => 'GENDER', // Clave del atributo en el marketplace
-            'orden'        => 1, //Posicion del atributo en jerarquía 
-            'nombre',      => 'Género', // Como se le presenta al usuario
-            'mandatorio',  => 0, // 1 = Si, 0 = No
-            'tipo_valor'   => 'string', / string, boolean, list, numeric
-            'tipo_long_max' => 20, // Cuando es tring, longitud màxima 0 en todos los demas casos 
-            'variante'     => 0,  // 1 = Si, 2 = No, si el atributo define como variante
-            'mapa'         => 'GENERO,GENDER' // Mapa de atributos de MArketSync que tendían el valor correcto
-        ];
-        Devuelve el registro generado
-    */
+    /* Recibe arreglo con atributo,  Devuelve el registro generado  */
     public function addAtributo($data) {
         $url = $this->server . "atributos";
         $fields = ['id', 'categoria_id', 'atributo', 'orden', 'nombre', 'mandatorio', 
@@ -118,16 +81,7 @@ class Auxiliar {
         return json_decode($res);
     }
 
-    /*
-        $valor = [
-            'id'            => null, // Identificador de registro
-            'key_id'        => 125, // Identificador de atributo 
-            'clasificacion' =>  'valor', // etiqueta,unidad,valor
-            'clave'         =>  '1253', // identificador del market para el valor  
-            'valor'         =>  'Hombre' // Valor de lista
-        ];
-        Devuelve el registro generado
-    */
+    /*  Revibe arreglo del valor de atributo,  Devuelve el registro generado  */
     public function addValor($data) {
         $url = $this->server . "valores";
         $fields = ['id', 'key_id', 'clasificacion', 'clave', 'valor'];
@@ -137,15 +91,8 @@ class Auxiliar {
         return json_decode($res);
     }
 
-    /*  Solo inserta
-        [
-            'id'        => null, // identificador de registro
-            'evento_id' => 1, // Entero de 1-7
-            'seccion'   => 'productos', // Tabla por afectar
-            'row_id'    => 265, // Identificador de registro afectado (id de producto en este caso)  
-            'acciones'  => 'Descripcion de operacin realizada, en caso de error el error que devuelve el MPS'
-        ];
-
+    /*  Solo inserta bitácora y devuelve registro 
+    
         Valores posibles para evento_id
         1   Agregar                   
         2   Actualizar                
@@ -155,7 +102,6 @@ class Auxiliar {
         6   Reconstruir               
         7   Consultar   (Para Pedids y Tickets)              
 
-        Devuelve registro generado
     */
     public function addBitacora($data) {
         $url = $this->server . "bitacoras";
@@ -166,18 +112,7 @@ class Auxiliar {
         return json_decode($res);
     }
 
-    /*
-    [   
-        'id'            => null, // Identificador de registro
-        'product_id'    => 12536, // Identificador de producto
-        'precio'        => 1000.00,// Precio de lista
-        'oferta'        => 800.00, // Precio oferta
-        'envio'         => 65.00,  // Precio de envío
-        'market_sku'    => 'MLM25369822', // Identificador del MarketPlace
-        'transaction_id'=> 0, // Identificador de registro entero
-        'referencia'    => 'https://market.com/id=145151', // Url del producto en el marketplace
-        'estatus'       = 99
-    ];
+    /* Agrega producto, revibe registro y devuelve registro insertado
     // Posibles estatus
     const ITEM_SIN_CONFIRMAR = 99; 
     const ITEM_CONFIRMADO = 1; 
@@ -196,29 +131,18 @@ class Auxiliar {
         return json_decode($res);
     }
 
-    /* Obtiene el listado de productos de acuerdo al estatus
-    */
+    /* Obtiene el listado de productos de acuerdo al estatus  */
     public function getProductos($estatus=-1, $id=0) {
         $estatus = (int)$estatus;
         $id = (int)$id;
         $url = $this->server . "productos";
-        $this->checkData($data, $fields);
         $params = ['market_id'=>$this->market, 'filtro'=>$estatus];
         $res = callAPI($url, "GET", $this->publica, $this->privada, $params, $data);
         return json_decode($res);
     }
 
-    /* Solo agregue los campos que vaya a actualizar y el "id"
-    [
-        'id'            => 1250360, // Identificador de registro
-        'precio'        => 1000.00,// Precio de lista
-        'oferta'        => 800.00, // Precio oferta
-        'envio'         => 65.00,  // Precio de envío
-        'market_sku'    => 'MLM25369822', // Identificador del MarketPlace
-        'transaction_id'=> 0, // Identificador de registro entero
-        'referencia'    => 'https://market.com/id=145151', // Url del producto en el marketplace
-        'estatus'       = 1
-    ];
+    /* Actualia producto
+    Solo agregue los campos que vaya a actualizar y el "id"
 
     // Posibles estatus
     const ITEM_SIN_CONFIRMAR = 99; 
@@ -231,23 +155,25 @@ class Auxiliar {
     */
     public function updProducto($data) {
         $url = $this->server . "productos";
-        $fields = ['id', 'precio', 'oferta', 'envio', 'market_sku', 
-        'transaction_id', 'referencia', 'estatus'];
-        $this->checkData($data, ['id']);
+        $fields = ['id', 'product_id', 'precio', 'oferta', 'envio', 'market_sku', 
+        'transaction_id', 'referencia', 'fulfillment', 'estatus'];
+        $this->checkData($data, ['id','product_id']);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "PUT", $this->publica, $this->privada, $params, $data);
         return json_decode($res);
     }
 
-    /* 
-    'id'            => null,           // Identificador de registro
-    'product_id'    => 1253,        // Identificador de producto
-    'sku'           => '58369-250', // Sku hijo
-    'stock_id'      => 1263001,     // Identificador de variacion
-    'market_sku'    => '145236985221', // Identificador de registro en MPS
-    'referencia'    => '14521411141',  // Identificador de registro auxiliar en MPS
-    'stock'         => 1 // Stock registrado
-    */
+    /* Elimina el registro del producto y del stock */
+    public function delProducto($id) {
+        $url = $this->server . "productos";
+        $data = ['id'=>(int)$id];
+        $params = ['market_id'=>$this->market];
+        $res = callAPI($url, "DELETE", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
+
+    /* Agrega Stock, recibe un arreglo y regresa el registro */
     public function addStock($data) {
         $url = $this->server . "stock";
         $fields = ['id', 'product_id', 'sku', 'stock_id', 'market_sku', 'referencia', 'stock'];
@@ -257,12 +183,7 @@ class Auxiliar {
         return json_decode($res);
     }
 
-    /* Solo agregue los campos que vaya a actualizar y el "id"
-    'id'            => 125630,           // Identificador de registro
-    'market_sku'    => '145236985221', // Identificador de registro en MPS
-    'referencia'    => '14521411141',  // Identificador de registro auxiliar en MPS
-    'stock'         => 0 // Stock registrado
-    */
+    /* Actualiza Stock, solo agregue los campos que vaya a actualizar y el "id"  */
     public function updStock($data) {
         $url = $this->server . "stock";
         $fields = ['id', 'market_sku', 'referencia', 'stock'];
@@ -272,17 +193,18 @@ class Auxiliar {
         return json_decode($res);
     }
 
-  /* 
-      [ 'id'          => null,  // Identificador de registro
-        'product_id'  => 1235,  // Identificador de producto,
-        'sku'         => '1280',// Sku hijo SellerSku
-        'orden'       => 1,     // Entero del 1 al 6 con el # de imagen
-        'id_mkt'      => '',    // En caso de aplicar se llenara con el hash de la imagen en MarketPlace
-        'url'         => 'http://myempresa.com/imagenes/1280-1.jpg'
-    ];
-    */
+    /* Elimina el registro del stock */
+    public function delStock($id) {
+        $url = $this->server . "stock";
+        $data = ['id'=>(int)$id];
+        $params = ['market_id'=>$this->market];
+        $res = callAPI($url, "DELETE", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
+  /*  Agrega imagen, recibe arreglo    */
     public function addImagen($data) {
-        $url = $this->server . "imagens";
+        $url = $this->server . "imagenes";
         $fields = ['id','market_id','product_id','sku','orden','id_mkt', 'url'];
         $this->checkData($data, $fields);
         $params = ['market_id'=>$this->market];
@@ -290,20 +212,127 @@ class Auxiliar {
         return json_decode($res);
     }
 
-
-   /* Agregue todos los campos para actualizar
-    [   'id'          => 513698,  // Identificador de registro
-        'id_mkt'      => '',    // En caso de aplicar se llenara con el hash de la imagen en MarketPlace
-        'url'         => 'http://myempresa.com/imagenes/1280-1a.jpg'
-    ];
-  
-    */
+   /* Actualiza imagen, agregue todos los campos para actualizar    */
     public function updImagen($data) {
         $url = $this->server . "imagenes";
         $fields = ['id','id_mkt', 'url'];
         $this->checkData($data, ['id']);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
+    /* Elimina el registro de imagen */
+    public function delImagen($id) {
+        $url = $this->server . "imagenes";
+        $data = ['id'=>(int)$id];
+        $params = ['market_id'=>$this->market];
+        $res = callAPI($url, "DELETE", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
+    /* Agrega registro de guías */
+    public function addGuia($data) {
+        $url = $this->server . "guias";
+        $fields = ['id','pedido_id','label','guia','mensajeria','estatus'];
+        $this->checkData($data, $fields);
+        $params = ['market_id'=>$this->market];
+        $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
+    /* Actualiza registro de guías, se tienen que incluir todos los campos */
+    public function updGuia($id) {
+        $url = $this->server . "guias";
+        $fields = ['id','estatus'];
+        $this->checkData($data, $fields);
+        $params = ['market_id'=>$this->market];
+        $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
+
+    /* Se ingresa registro de pedido */
+    public function addPedidos($data) {
+        $url = $this->server . "pedidos";
+        $fields = ['id', 'referencia', 'fecha_pedido', 'fecha_autoriza','email',
+        'entregara', 'telefono', 'direccion', 'entrecalles', 'colonia', 'ciudad',
+        'estado', 'observacione','cp', 'envio', 'comision', 'estatus', 
+        'shipping_id', 'detalle'];
+        
+        $detalle = ['sku','descripcion','cantidad','precio','color','talla', 'referencia', 'fulfillment'];
+        $this->checkData($data, $fields);
+        if (!is_array($data['detalle']) || count($data['detalle'])==0)
+            throw new Exception("Error Not Items found.", 1);
+        
+        foreach ($data['detalle'] as $row) {
+            $this->checkData($row, $detalle);
+        }
+        $params = ['market_id'=>$this->market];
+        $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
+
+    /* Atualiza registro de pedido   */
+    public function updPedido($id, $estatus, $total=0, $pedido_mkt=null) {
+        $url = $this->server . "pedidos";
+        $data = [
+            'id' => $id,
+            'estatus' => $estatus,
+            'total'   => $total,
+            'orden_id'=> $pedido_mkt
+        ];
+        $this->checkData($data, $fields);
+        $params = ['market_id'=>$this->market];
+        $res = callAPI($url, "PUT", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+
+    }
+
+    /* Regresa pedidos 
+    POSIBLES ESTATUS
+    0 // Todos Los últimos $limit registros en orden descendente por fecha de actualización
+    PEDIDO_NOREPORTADO // Pedidos que no han sido reportados al e-commerce para si generación
+    PEDIDO_CAMBIO  // Pedidos que actualizaron el 
+    */
+
+    public function getPedidos($filtro=0,$limit=50) {
+        $filtro = (int)$filtro;
+        $url = $this->server . "pedidos";
+        $params = ['market_id'=>$this->market, 'filtro'=>$filtro, 'limit'=>$limit];
+        $res = callAPI($url, "GET", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
+    /* Registra feed en caso  de procesamiento en lote */
+    public function addFeed($data) {
+        $url = $this->server . "feeds";
+        $fields = ['id','feed','request'];
+        $this->checkData($data, $fields);
+        $params = ['market_id'=>$this->market];
+        $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+
+    }
+    /* Actualiza feed con respuesta en caso  de procesamiento en lote */
+    public function updFeed($id, $answer) {
+        $url = $this->server . "feeds";
+        $fields = ['id','answer'];
+
+        $data = ['id'=>$id, 'answer'=>$answer];
+        if ($answer)  $data['revisado'] = 1;
+        $params = ['market_id'=>$this->market];
+        $res = callAPI($url, "PUT", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
+    /* obtiene feeds que aun no han sido marcados como concluidos */
+    public function getFeeds($limit=50) {
+        $filtro = 1;
+        $url = $this->server . "feeds";
+        $params = ['market_id'=>$this->market, 'filtro'=>$filtro, 'limit'=>$limit];
+        $res = callAPI($url, "GET", $this->publica, $this->privada, $params, $data);
         return json_decode($res);
     }
 
