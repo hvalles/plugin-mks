@@ -332,8 +332,7 @@ Para obtener un listado de a lo más 100 productos sin publicar
  si el parametro $save=TRUE, agregará los feeds a través de la función
  Auxiliar addFeed($data);
  Si el $filtro es 0 arrojara una lista con los feeds de los últimos $dias.
- Si el $filtro no es cero, llamará a la funcion auxiliar getFeeds() par actualizar la respuesta
- del feed
+ Si el $filtro no es cero, llamará a la funcion auxiliar getFeeds() para actualizar la respuesta, al recibir la respuesta si esta contiene errores debe de grabar un registro en addBitacora por cada sku recibido en el archivo; en un formato legible en texto plano no estructurado (no json, no xml, etc.); así como actualizar la respuesta con la función updFeed($id, $answer).
 - `public  function getFeeds($filtro=0, $dias=15, $save=FALSE);`
 
 ### Algunos MarketPlaces, reciben las imágenes en operaciones diferentes a la alta de productos
