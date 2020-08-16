@@ -18,7 +18,7 @@ class Stock {
     public $upc;
     public $ean;
     
-    // Los siguiente elementos corresponden al registro del stock del MPS
+    // Los siguientes elementos corresponden al registro del stock del MPS
     public $id_mk;      // Identificador de registro 
     public $sku_mk;     // Sku del hijo registrado en MPS 
     public $stock_mk;   // Stock registrado en MPS

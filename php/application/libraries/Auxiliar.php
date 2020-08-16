@@ -1,12 +1,9 @@
 <?php
-
-
 class Auxiliar {
 
     const LIMITE_REGISTROS = 50;
     public function __construct() 	{
         parent::__construct();
-        $this->CI =& get_instance();
         $this->load->helper('curl');
     }
 
@@ -24,9 +21,8 @@ class Auxiliar {
     /* Devuelve el registro de campos a configurar */
     public function getConfig() {
         return array(
-            'cliente' => $this->cliente,
+            'cliente' => $this->cliente, 
             'market' => $this->market,
-            'server' => $this->server,
             'server' => $this->server,
             'publica' => $this->public,
             'privada' => $this->privada,
@@ -43,10 +39,44 @@ class Auxiliar {
         }
     }
 
+    public function getSetting($id=0) {
+        $url = $this->server . "settings";
+        $this->checkData($data, ['id:i']);
+        $params = ['market_id'=>$this->market];
+
+    }
+
+    public function addSetting($data, $global=FALSE) {
+        $url = $this->server . "settings";
+        $this->checkData($data, ['id:i','valor:a']);
+        $params = ['market_id'=>$this->market];
+        $data['clave'] = $global?'global':'config';
+        $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
+    public function updSetting($data, $global=FALSE) {
+        $url = $this->server . "settings";
+        $this->checkData($data, ['id:i','valor:a']);
+        $params = ['market_id'=>$this->market];
+        $data['clave'] = $global?'global':'config';
+        $res = callAPI($url, "PUT", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
+    public function delSetting($id, $global=FALSE) {
+        $url = $this->server . "settings";
+        $this->checkData($data, ['id:i']);
+        $params = ['market_id'=>$this->market];
+        $data['clave'] = $global?'global':'config';
+        $res = callAPI($url, "DELETE", $this->publica, $this->privada, $params, $data);
+        return json_decode($res);
+    }
+
     /* Se espera arreglo de arreglos con no más de 50 elementos por vez  */    
     public function addMarcas($data) {
         $url = $this->server . "marcas";
-        $this->checkData($data, ['marca','marca_market']);
+        $this->checkData($data, ['marca:s50','marca_market:s50']);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
         return json_decode($res);
@@ -55,7 +85,7 @@ class Auxiliar {
     /* Se espera arreglo de arreglos con no más de 50 elementos por vez    */    
     public function addColores($data) {
         $url = $this->server . "colores";
-        $this->checkData($data, ['color_base','color_market']);
+        $this->checkData($data, ['color_base:s50','color_market:s50']);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
         return json_decode($res);
@@ -64,7 +94,7 @@ class Auxiliar {
     /* Recibe un arreglo con la categoria a dar de alta y regresa la categoria registrada." */
     public function addCategoria($data) {
         $url = $this->server . "categorias";
-        $this->checkData($data, ['id','categoria','nombre','ruta','padre']);
+        $this->checkData($data, ['id:i','categoria:s30','nombre:s100','ruta:s255','padre:i']);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
         return json_decode($res);
@@ -73,8 +103,8 @@ class Auxiliar {
     /* Recibe arreglo con atributo,  Devuelve el registro generado  */
     public function addAtributo($data) {
         $url = $this->server . "atributos";
-        $fields = ['id', 'categoria_id', 'atributo', 'orden', 'nombre', 'mandatorio', 
-        'tipo_valor', 'tipo_long_max', 'variante', 'mapa'];        
+        $fields = ['id:i', 'categoria_id:i', 'atributo:s100', 'orden:i', 'nombre:s100', 
+        'mandatorio:b', 'tipo_valor:s20', 'tipo_long_max:i', 'variante:b', 'mapa:s200'];
         $this->checkData($data, $fields);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
@@ -84,8 +114,10 @@ class Auxiliar {
     /*  Revibe arreglo del valor de atributo,  Devuelve el registro generado  */
     public function addValor($data) {
         $url = $this->server . "valores";
-        $fields = ['id', 'key_id', 'clasificacion', 'clave', 'valor'];
+        $fields = ['id:i', 'key_id:i', 'clasificacion:s8', 'clave:s50', 'valor:s50'];        
         $this->checkData($data, $fields);
+        if (!in_array($data['clasificacion'],['etiqueta','unidad','valor']))
+            throw new Exception("Error clasificacion value is not valid. ['etiqueta','unidad','valor']");
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
         return json_decode($res);
@@ -105,7 +137,7 @@ class Auxiliar {
     */
     public function addBitacora($data) {
         $url = $this->server . "bitacoras";
-        $fields = ['id','evento_id', 'seccion', 'row_id', 'acciones'];
+        $fields = ['id:i','evento_id:i', 'seccion:s30', 'row_id:i', 'acciones:s15000'];
         $this->checkData($data, $fields);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
@@ -123,8 +155,8 @@ class Auxiliar {
     */
     public function addProducto($data) {
         $url = $this->server . "productos";
-        $fields = ['id', 'product_id', 'precio', 'oferta', 'envio', 'market_sku', 
-        'transaction_id', 'referencia', 'estatus'];
+        $fields = ['id:i', 'product_id:i', 'precio:f', 'oferta:f', 'envio:f', 
+        'market_sku:s20', 'transaction_id:i', 'referencia:s200', 'estatus:t'];
         $this->checkData($data, $fields);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
@@ -155,8 +187,8 @@ class Auxiliar {
     */
     public function updProducto($data) {
         $url = $this->server . "productos";
-        $fields = ['id', 'product_id', 'precio', 'oferta', 'envio', 'market_sku', 
-        'transaction_id', 'referencia', 'fulfillment', 'estatus'];
+        $fields = ['id:i', 'product_id:i', 'precio:f', 'oferta:f', 'envio:f', 
+        'market_sku:s20', 'transaction_id:i', 'referencia:s200', 'fulfillment:b', 'estatus:t'];
         $this->checkData($data, ['id','product_id']);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "PUT", $this->publica, $this->privada, $params, $data);
@@ -176,7 +208,8 @@ class Auxiliar {
     /* Agrega Stock, recibe un arreglo y regresa el registro */
     public function addStock($data) {
         $url = $this->server . "stock";
-        $fields = ['id', 'product_id', 'sku', 'stock_id', 'market_sku', 'referencia', 'stock'];
+        $fields = ['id:i', 'product_id:i', 'sku:s20', 'stock_id:i', 
+        'market_sku:s20', 'referencia:s20', 'stock:i'];
         $this->checkData($data, $fields);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
@@ -186,7 +219,7 @@ class Auxiliar {
     /* Actualiza Stock, solo agregue los campos que vaya a actualizar y el "id"  */
     public function updStock($data) {
         $url = $this->server . "stock";
-        $fields = ['id', 'market_sku', 'referencia', 'stock'];
+        $fields = ['id:i', 'market_sku:s20', 'referencia:s20', 'stock:i'];
         $this->checkData($data, ['id']);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
@@ -205,7 +238,7 @@ class Auxiliar {
   /*  Agrega imagen, recibe arreglo    */
     public function addImagen($data) {
         $url = $this->server . "imagenes";
-        $fields = ['id','market_id','product_id','sku','orden','id_mkt', 'url'];
+        $fields = ['id:i','product_id:i','sku:s20','orden:t','id_mkt:s30', 'url:s500'];
         $this->checkData($data, $fields);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
@@ -215,7 +248,7 @@ class Auxiliar {
    /* Actualiza imagen, agregue todos los campos para actualizar    */
     public function updImagen($data) {
         $url = $this->server . "imagenes";
-        $fields = ['id','id_mkt', 'url'];
+        $fields = ['id:i','id_mkt:s30', 'url:s500'];
         $this->checkData($data, ['id']);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
@@ -234,7 +267,7 @@ class Auxiliar {
     /* Agrega registro de guías */
     public function addGuia($data) {
         $url = $this->server . "guias";
-        $fields = ['id','pedido_id','label','guia','mensajeria','estatus'];
+        $fields = ['id:i','pedido_id:i','label:s15000','guia:s50','mensajeria:s30','estatus:t'];
         $this->checkData($data, $fields);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
@@ -244,26 +277,27 @@ class Auxiliar {
     /* Actualiza registro de guías, se tienen que incluir todos los campos */
     public function updGuia($id) {
         $url = $this->server . "guias";
-        $fields = ['id','estatus'];
+        $fields = ['id:i','estatus:t'];
         $this->checkData($data, $fields);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
         return json_decode($res);
     }
 
-
     /* Se ingresa registro de pedido */
     public function addPedidos($data) {
         $url = $this->server . "pedidos";
-        $fields = ['id', 'referencia', 'fecha_pedido', 'fecha_autoriza','email',
-        'entregara', 'telefono', 'direccion', 'entrecalles', 'colonia', 'ciudad',
-        'estado', 'observacione','cp', 'envio', 'comision', 'estatus', 
-        'shipping_id', 'detalle'];
+        $fields = ['id:i', 'referencia:s30', 'fecha_pedido:d', 'fecha_autoriza:d',
+        'email:s50', 'entregara:s120', 'telefono:s20', 'direccion:s100', 
+        'entrecalles:s100', 'colonia:s100', 'ciudad:s100', 'estado:s100', 
+        'observaciones:s200','cp:s5', 'envio:f', 'comision:f', 'estatus:s30', 
+        'shipping_id:i', 'detalle:a'];
         
-        $detalle = ['sku','descripcion','cantidad','precio','color','talla', 'referencia', 'fulfillment'];
+        $detalle = ['sku:s20','descripcion:s120','cantidad:i','precio:f',
+        'color:s20','talla:s10', 'referencia:s30', 'fulfillment:b'];
         $this->checkData($data, $fields);
         if (!is_array($data['detalle']) || count($data['detalle'])==0)
-            throw new Exception("Error Not Items found.", 1);
+            throw new Exception("Error No Items found.", 1);
         
         foreach ($data['detalle'] as $row) {
             $this->checkData($row, $detalle);
@@ -278,10 +312,10 @@ class Auxiliar {
     public function updPedido($id, $estatus, $total=0, $pedido_mkt=null) {
         $url = $this->server . "pedidos";
         $data = [
-            'id' => $id,
-            'estatus' => $estatus,
-            'total'   => $total,
-            'orden_id'=> $pedido_mkt
+            'id:i' => $id,
+            'estatus:s30' => $estatus,
+            'total:f'   => $total,
+            'orden_id:i'=> $pedido_mkt // No lo incluya si no lova a procesar
         ];
         $this->checkData($data, $fields);
         $params = ['market_id'=>$this->market];
@@ -308,7 +342,7 @@ class Auxiliar {
     /* Registra feed en caso  de procesamiento en lote */
     public function addFeed($data) {
         $url = $this->server . "feeds";
-        $fields = ['id','feed','request'];
+        $fields = ['id:i','feed:s50','request:s15000'];
         $this->checkData($data, $fields);
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
@@ -318,9 +352,7 @@ class Auxiliar {
     /* Actualiza feed con respuesta en caso  de procesamiento en lote */
     public function updFeed($id, $answer) {
         $url = $this->server . "feeds";
-        $fields = ['id','answer'];
-
-        $data = ['id'=>$id, 'answer'=>$answer];
+        $data = ['id'=>(int)$id, 'answer'=>$answer];
         if ($answer)  $data['revisado'] = 1;
         $params = ['market_id'=>$this->market];
         $res = callAPI($url, "PUT", $this->publica, $this->privada, $params, $data);
@@ -336,7 +368,11 @@ class Auxiliar {
         return json_decode($res);
     }
 
-
+    function chkDate($date, $format = 'Y-m-d HH:mm:ss') {
+        DateTime::createFromFormat($format, $date);
+        $errors = DateTime::getLastErrors();
+        return $errors['warning_count'] === 0 && $errors['error_count'] === 0;
+    }
     // Funcion de comprobacion de columnas
     private function checkData($data, $fields) {
         if (!$this->market)
@@ -345,9 +381,12 @@ class Auxiliar {
         if (!$this->privada || !$this->publica)
             throw new Exception('Keys are not configured.');
 
+        if (!$this->server || !$this->cliente)
+            throw new Exception('Server or client are not configured.');
+
         if (!is_array($data) || !is_array($data[0])) 
             throw new Exception('An Array of arrays was expected.');
-        
+
         if (count($data) > Auxiliar::LIMITE_REGISTROS) 
             throw new Exception('Array Outbound Error ['. Auxiliar::LIMITE_REGISTROS.'].');
         
@@ -357,8 +396,30 @@ class Auxiliar {
                 throw new Exception("Unnecesary fields at row [$i].");
             
             foreach ($fields as $f) {
-                if (!isset($m[$f]))
+                $f1 = explode(':',$f);
+                if (!isset($m[$f1[0]]))
                     throw new Exception("Missing field ($f) at row [$i].");
+                
+                $n = $f1[0]; // nombre
+                $v = $m[$n]; // valor
+                
+                if (count($f1)==2){
+                    $dt = $f1[1]; // tipo de dato
+                    if ($dt[0]=='s' && strlen($v)> (int)str_replace('s','',$dt))
+                        throw new Exception(" field ($n) at row [$i] oversize its capacity.");
+                    if ($dt=='i' && !is_int($v) && !($n=='id' && is_null($v)))
+                        throw new Exception(" field ($n) at row [$i] is not a valid integer.");
+                    if ($dt=='f' && !is_number($v))
+                        throw new Exception(" field ($n) at row [$i] is not a valid number.");
+                    if ($dt=='b' && (!is_int($v) ||  !in_array((int)$v, [0,1])))
+                        throw new Exception(" field ($n) at row [$i] is not a valid value.");
+                    if ($dt=='t' && (!is_int($v) ||  (int)$v > 255))
+                        throw new Exception(" field ($n) at row [$i] is not a valid value.");
+                    if ($dt=='d' && !chkDate($v))
+                        throw new Exception(" field ($n) at row [$i] is not a valid date.");
+                    if ($dt=='a' && !is_array($v))
+                        throw new Exception(" field ($n) at row [$i] is not a valid array.");
+                }
             }            
             $i++;
         }
@@ -366,8 +427,5 @@ class Auxiliar {
     }
 
 }
-
-
-
 
 ?>

@@ -39,9 +39,7 @@ Como es el estándar de CI los modelos se ubican en `application/models`.
 Todos los controladores deberán de heredar de My_Controller, ya que los mecanismos de seguridad se aplican en el mismo
 
 ```php
-class Plugin extends MY_Controller {}
-
-// Tu puedes heredar directamene de Plugin
+class Plugin extends Plugin {}
 
 ```
 ├── application
@@ -66,6 +64,25 @@ class Plugin extends MY_Controller {}
                 └── no-image.png
                 
 **No heredar del mismo será motivo de rechazo en su aplicación.**
+
+### Pra los integradors de MarketPlaces
+1. Se debe de crear un plugin que permita recopilar la información del cliente
+2. El mismo se comunicara con el MarketPlace que lo permita para autorizar el acceso
+del componente a los datos del cliente.
+3. De no haber un punto dos viable, se deberá derecopilar toda la información necesaria para efectuar la integración en el punto 1.
+4. De haber una llmada Callback desde el MarketPlace, apuntará al mismo plugin que tiene acceso de preferencia a una función llamada callback.
+5. Al terminar debera hacer una llamada a verificar los settings globales de su plugin y almacenarlos en caso de que no existan, así como los del cliente en cuestión para que se almacene la configuración necesaria para acceder a los datos del cliente en el MPS.
+6. Entre los datos globales son los comunes a todos los clientes como:
+    - Url del portal
+    - Identificador de MarketPlace
+    - Si la marca,color,upc son requeridos, etc.
+    - Entre otrosd
+7. Entre los datos de cada cliente puede encontrar:
+    - SellerID
+    - Token
+    - Expiration Date
+    - Refresh Token
+    - Entre otros
 
 ### Observaciones
 - No tendrá acceso directo a la base de datos, a menos de que le sea concedido a través de un convenio directo con MarketSync

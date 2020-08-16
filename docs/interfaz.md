@@ -125,6 +125,8 @@ interface iMarketPlace {`
  En Auxiliar debe de llamar 
 - setConfig($data);
 - Puede llamar a getConfig() para evisar los parámetros a configurar
+- Debe de llamar a la función getSettings, para determinar la configuración
+almacenada en la base de datos.
 
 - `public  function SignIt($cliente);`
 

@@ -24,21 +24,66 @@ public $privada = null; // Llave privada
 public $publica = null; // Llave pública
 public $server = null; // Servidor de API
 public $requiere_upc = FALSE; // Si es TRUE, las variaciones que no cuenten con UPC se excluirán.
-public $requiere_marca = FALSE; // Si es TRUE, los productos que no cuenten con el empate de marcas se excluiran
-public $requiere_color = FALSE; // Si es TRUE, las variaciones que no cuenten con el empate de color se excluiran
-public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lotes o de uno en uno
+public $requiere_marca = FALSE; // Si es TRUE, los productos que no cuenten con el empate de marcas se excluirán
+public $requiere_color = FALSE; // Si es TRUE, las variaciones que no cuenten con el empate de color se excluirán
+public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lotes o de uno en uno (default).
 ```
 
 -  Devuelve el registro de campos a configurar 
-    - `public function getConfig()  `
+- `public function getConfig()  `
+```php
+            'cliente' => $this->cliente, // [int]
+            'market' => $this->market, // [int]
+            'server' => $this->server, // [string(50)]
+            'publica' => $this->public, // [string(64)]
+            'privada' => $this->privada, // [string(64)]
+            'requiere_upc' => $this->requiere_upc, // [tinyint]
+            'requiere_marca' => $this->requiere_marca, // [tinyint]
+            'requiere_color' => $this->requiere_color, // [tinyint]
+            'procesa_lotes' => $this->lotes // [tinyint]
+```
+
 - Establece la configuración inicial
-    - `public function setConfig($data) `
+- `public function setConfig($data) `
+
+#### El Plugin almacena su configuracion en esta seccion de settings
+- Puede almacenar datos globales como el url del API que es común para
+todos los clientes ($global=TRUE)
+- Puede alkmacenar datos relacionados con el cliente como el SellerID,
+PrivateKey, Token, RefreshToken, etc. ($global=FALSE)
+
+#### Obtiene parámetros de configurración
+- Obtiene configuracion del plugin  $id [int]
+- `public function getSetting($id=0)`
+
+#### Agrega configuración a cliente nuevo o global
+-  Agrega configuracion del plugin
+```php      [
+    'id' => null, // Identificador de registro [int]
+    'valor' => [] // Arreglo de configuracion por almacenar [array]
+    ]
+```
+- `public function addSetting($data, $global=FALSE)`
+
+#### Actualiza configuracion a cliente o global
+- Actualiza configuracion del plugin
+```php      [
+    'id' => 12563, // Identificador de registro [int]
+    'valor' => [] // Arreglo de configuracion por almacenar [array]
+    ]
+```
+- `public function updSetting($data, $global=FALSE)`
+
+#### Elimina configuracion, usualmente a clientes
+- Elimina configuracion del plugin $id [int]
+- `public function delSetting($id, $global=FALSE)`
+
 
 #### Registro de marcas del MPS
 - Se espera arreglo de arreglos con no más de 50 elementos por vez
-```php        $marca = [[
-                'marca' => "nombre de la marca",
-                'marca_market' => "101253" // Identificador de marca o lo mismo que marca de no existir
+```php        $marca = [
+                'marca' => "nombre de la marca", // [string(50)]
+                'marca_market' => "101253" // Identificador de marca o lo mismo que marca de no existir [string(50)]
             ]
         ];
 ```
@@ -48,8 +93,8 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 - Se espera arreglo de arreglos con no más de 50 elementos por vez
  ```php
     $color = [[
-        'color_base' => "nombre de color",
-        'color_market' => "101253" // Identificador de color
+        'color_base' => "nombre de color", // [string(50)]
+        'color_market' => "101253" // Identificador de color [string(50)]
         ];
 ```
 - `public function addColores($data)`
@@ -57,11 +102,11 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 #### Registro de categorias
 -  Recibe un arreglo con la categoria a dar de alta y regresa la categoria registrada.
 ```php
-        [   'id' => null,
-            'categoria' => "Clave de Categoria en Market",
-            'nombre'    => "Nombre de la categoria",
-            'ruta'      => "/Abuelo/Padre/Hijo", # Arbol de categoria separado por Slash
-            'padre'     => "Clave de la categoria padre
+        [   'id' => null, // [int]
+            'categoria' => "Clave de Categoria en Market", // [string(30)]
+            'nombre'    => "Nombre de la categoria", // [string(100)]
+            'ruta'      => "/Abuelo/Padre/Hijo", # Arbol de categoria separado por Slash [string(255)]
+            'padre'     => "Clave de la categoria padre" // [int]
         ];
 ```
 - `public function addCategoria($data)`
@@ -70,16 +115,16 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 - Recibe arreglo con atributo
 ```php
         $atr = [
-            'id'           => null, // Identificador de atributo
-            'categoria_id' => 1001, // Identificador de categoría a la que pertenece el atributo
-            'atributo'     => 'GENDER', // Clave del atributo en el marketplace
-            'orden'        => 1, //Posicion del atributo en jerarquía 
-            'nombre',      => 'Género', // Como se le presenta al usuario
-            'mandatorio',  => 0, // 1 = Si, 0 = No
-            'tipo_valor'   => 'string', / string, boolean, list, numeric
-            'tipo_long_max' => 20, // Cuando es tring, longitud màxima 0 en todos los demas casos 
-            'variante'     => 0,  // 1 = Si, 2 = No, si el atributo define como variante
-            'mapa'         => 'GENERO,GENDER' // Mapa de atributos de MArketSync que tendían el valor correcto
+            'id'           => null, // Identificador de atributo [int]
+            'categoria_id' => 1001, // Identificador de categoría a la que pertenece el atributo [int]
+            'atributo'     => 'GENDER', // Clave del atributo en el marketplace [string(100)]
+            'orden'        => 1, //Posicion del atributo en jerarquía  [int]
+            'nombre',      => 'Género', // Como se le presenta al usuario [string(100)]
+            'mandatorio',  => 0, // 1 = Si, 0 = No [tinyint]
+            'tipo_valor'   => 'string', // string, boolean, list, numeric [string(20)]
+            'tipo_long_max' => 20, // Cuando es string, longitud màxima 0 en todos los demas casos [int]
+            'variante'     => 0,  // 1 = Si, 2 = No, si el atributo define como variante [tinyint]
+            'mapa'         => 'GENERO,GENDER' // Mapa de atributos de MArketSync que tendían el valor correcto [string(200)]
         ];
 ```
 - Devuelve el registro generado
@@ -89,11 +134,11 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 - Recibe arreglo de valor 
 ```php
         $valor = [
-            'id'            => null, // Identificador de registro
-            'key_id'        => 125, // Identificador de atributo 
-            'clasificacion' =>  'valor', // etiqueta,unidad,valor
-            'clave'         =>  '1253', // identificador del market para el valor  
-            'valor'         =>  'Hombre' // Valor de lista
+            'id'            => null, // Identificador de registro [int]
+            'key_id'        => 125, // Identificador de atributo [int]
+            'clasificacion' =>  'valor', // etiqueta,unidad,valor [enum]
+            'clave'         =>  '1253', // identificador del market para el valor [string(50)]
+            'valor'         =>  'Hombre' // Valor de lista [string(50)]
         ];
 ```
 - Devuelve el registro generado
@@ -102,11 +147,11 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 #### Registro de Bitácora
 - Recibe arreglo
 ```php        [
-            'id'        => null, // identificador de registro
-            'evento_id' => 1, // Entero de 1-7
-            'seccion'   => 'productos', // Tabla por afectar
-            'row_id'    => 265, // Identificador de registro afectado (id de producto en este caso)  
-            'acciones'  => 'Descripcion de operacin realizada, en caso de error el error que devuelve el MPS'
+            'id'        => null, // identificador de registro [int]
+            'evento_id' => 1, // Entero de 1-7 [int]
+            'seccion'   => 'productos', // Tabla por afectar [string(30)]
+            'row_id'    => 265, // Identificador de registro afectado (id de producto en este caso)  [int]
+            'acciones'  => 'Descripcion de operacin realizada, en caso de error el error que devuelve el MPS' // [text]
         ];
 ```
 
@@ -125,15 +170,15 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 - Recibe arreglo
 ```php
     [   
-        'id'            => null, // Identificador de registro
-        'product_id'    => 12536, // Identificador de producto
-        'precio'        => 1000.00,// Precio de lista
-        'oferta'        => 800.00, // Precio oferta
-        'envio'         => 65.00,  // Precio de envío
-        'market_sku'    => 'MLM25369822', // Identificador del MarketPlace
-        'transaction_id'=> 0, // Identificador de registro entero
-        'referencia'    => 'https://market.com/id=145151', // Url del producto en el marketplace
-        'estatus'       = 99
+        'id'            => null, // Identificador de registro [int]
+        'product_id'    => 12536, // Identificador de producto [int]
+        'precio'        => 1000.00,// Precio de lista [decimal(10,2)]
+        'oferta'        => 800.00, // Precio oferta [decimal(10,2)]
+        'envio'         => 65.00,  // Precio de envío [decimal(10,2)]
+        'market_sku'    => 'MLM25369822', // Identificador del MarketPlace [string(20)]
+        'transaction_id'=> 0, // Identificador de registro entero [int]
+        'referencia'    => 'https://market.com/id=145151', // Url del producto en el marketplace [string(200)]
+        'estatus'       = 99 //[tinyint]
     ];
 ```
 - Posibles estatus
@@ -154,16 +199,16 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 - Solo agregue los campos que vaya a actualizar y el "id"
 ```php
     [
-        'id'            => 1250360, // Identificador de registro
-        'product_id'    => 54361, // Identificador de producto
-        'precio'        => 1000.00,// Precio de lista
-        'oferta'        => 800.00, // Precio oferta
-        'envio'         => 65.00,  // Precio de envío
-        'market_sku'    => 'MLM25369822', // Identificador del MarketPlace
-        'transaction_id'=> 0, // Identificador de registro de MPS entero
-        'referencia'    => 'https://market.com/id=145151', // Url del producto en el marketplace
-        'fulfillment'   => 0, //  1 en caso de ser fulfillment
-        'estatus'       = 1
+        'id'            => 1250360, // Identificador de registro [int]
+        'product_id'    => 54361, // Identificador de producto [int]
+        'precio'        => 1000.00,// Precio de lista [decimal(10,2)]
+        'oferta'        => 800.00, // Precio oferta [decimal(10,2)]
+        'envio'         => 65.00,  // Precio de envío [decimal(10,2)]
+        'market_sku'    => 'MLM25369822', // Identificador del MarketPlace [string(20)]
+        'transaction_id'=> 0, // Identificador de registro de MPS entero [int]
+        'referencia'    => 'https://market.com/id=145151', // Url del producto en el marketplace [string(200)]
+        'fulfillment'   => 0, //  1 en caso de ser fulfillment [tinyint]
+        'estatus'       = 1 // [tinyint]
     ];
     // Posibles estatus
     const ITEM_SIN_CONFIRMAR = 99; 
@@ -184,13 +229,13 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 - Arreglo a enviar
 ```php
     [ 
-    'id'            => null,           // Identificador de registro
-    'product_id'    => 1253,        // Identificador de producto
-    'sku'           => '58369-250', // Sku hijo
-    'stock_id'      => 1263001,     // Identificador de variacion
-    'market_sku'    => '145236985221', // Identificador de registro en MPS
-    'referencia'    => '14521411141',  // Identificador de registro auxiliar en MPS
-    'stock'         => 1 // Stock registrado
+    'id'            => null,           // Identificador de registro [int]
+    'product_id'    => 1253,        // Identificador de producto [int]
+    'sku'           => '58369-250', // Sku hijo [string(20)]
+    'stock_id'      => 1263001,     // Identificador de variacion [int]
+    'market_sku'    => '145236985221', // Identificador de registro en MPS [string(20)]
+    'referencia'    => '14521411141',  // Identificador de registro auxiliar en MPS [string(20)]
+    'stock'         => 1 // Stock registrado [int]
     ];
 - `public function addStock($data)`
 ```
@@ -198,10 +243,10 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 #### Actualización de Stock
 ```php
     /* Solo agregue los campos que vaya a actualizar y el "id" */
-    'id'            => 125630,           // Identificador de registro
-    'market_sku'    => '145236985221', // Identificador de registro en MPS
-    'referencia'    => '14521411141',  // Identificador de registro auxiliar en MPS
-    'stock'         => 0 // Stock registrado
+    'id'            => 125630,           // Identificador de registro [int]
+    'market_sku'    => '145236985221', // Identificador de registro en MPS [string(20)]
+    'referencia'    => '14521411141',  // Identificador de registro auxiliar en MPS [string(20)]
+    'stock'         => 0 // Stock registrado [int]
     ];
 ```
 - Regresa registro actualizado
@@ -213,12 +258,12 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 #### Registro de imágenes
 - Recibre arreglo
 ```php
-      [ 'id'          => null,  // Identificador de registro
-        'product_id'  => 1235,  // Identificador de producto,
-        'sku'         => '1280',// Sku hijo SellerSku
-        'orden'       => 1,     // Entero del 1 al 6 con el # de imagen
-        'id_mkt'      => '',    // En caso de aplicar se llenara con el hash de la imagen en MarketPlace
-        'url'         => 'http://myempresa.com/imagenes/1280-1.jpg'
+      [ 'id'          => null,  // Identificador de registro [int]
+        'product_id'  => 1235,  // Identificador de producto, [int]
+        'sku'         => '1280',// Sku hijo SellerSku [string20]
+        'orden'       => 1,     // Entero del 1 al 6 con el # de imagen [tinyint]
+        'id_mkt'      => '',    // En caso de aplicar se llenara con el hash de la imagen en MarketPlace [string(30)]
+        'url'         => 'http://myempresa.com/imagenes/1280-1.jpg' // [string(500)]
     ];
 ```
 - Devuelve registro insertado
@@ -228,9 +273,9 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 - Recibe arreglo por actulizar
 ```php
    /* Agregue todos los campos para actualizar */
-    [   'id'          => 513698,  // Identificador de registro
-        'id_mkt'      => '',    // En caso de aplicar se llenara con el hash de la imagen en MarketPlace
-        'url'         => 'http://myempresa.com/imagenes/1280-1a.jpg'
+    [   'id'          => 513698,  // Identificador de registro [int]
+        'id_mkt'      => '',    // En caso de aplicar se llenara con el hash de la imagen en MarketPlace [string(30)]
+        'url'         => 'http://myempresa.com/imagenes/1280-1a.jpg' // [string(500)]
     ];
 ```
 - Devuelve registro actualizado
@@ -243,12 +288,12 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 - Recibe arreglo
 ```php
     [
-        'id' => null, //Identificador de registro
-        'pedido_id' => 25692, // Identificador de pedido 
-        'label'     => '', // Contenifo binariomen base64 de imagen o archivo de guia      
-        'guia'      => '125368555', // Número de guía
-        'mensajeria'=> 'Fedex', // Paquetería
-        'estatus'   => 1
+        'id' => null, //Identificador de registro [int]
+        'pedido_id' => 25692, // Identificador de pedido [int]
+        'label'     => '', // Contenifo binario en base64 de imagen o archivo de guia [text]
+        'guia'      => '125368555', // Número de guía [string(50)]
+        'mensajeria'=> 'Fedex', // Paquetería [string(30)]
+        'estatus'   => 1 //[tinyint]
     ];
 ```
 - Devuelve registro insertado
@@ -258,36 +303,36 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 #### Agrega registro de pedidos
 - Recibe arreglo
 ```php
-    ['id'   =>null,   //Identificador de registro
-    'referencia'=>,   // Pedido en el MarketPlace 
-    'fecha_pedido'=>, // YYYY-MM-DD HH:mm:ss (Formato de 24 hrs)   fecha de creación del pedido
-    'fecha_autoriza'=>,   // YYYY-MM-DD HH:mm:ss (Formato de 24 hrs)   fecha de autorizacion del pedido
-    'email'=>  'none@mymarket.com',   
-    'entregara'=> 'Ulises Rendon Martinez',    // Aquien se dirige el pedido
-    'telefono'=> '',    // 81 5536-2589
-    'direccion'=> 'Fuentes Verdes # 1250',    
-    'entrecalles'=> 'Cruz con Papagayos' ,    
-    'colonia'=>     'La esperancita',    
-    'ciudad'=>      'De Los Cabos',   
-    'estado'=>      'Baja California Sur',    
-    'observacione'=>,  'Puerta Negra, segundo piso' 
-    'cp'=>    52896,    
-    'envio'=> 95.50,  // Costo de envío en caso de que MPS venda la guia  
-    'comision'=> 60.00,   // Cargo que realiza el MPS por servicio
-    'estatus'=> 'OPEN', // Estatus tal cual viene en el MPS    
-    'shipping_id'=> null,    // Aplica para los MPS q¡ue no agrupan los items en un solo pedido
+    ['id'   =>null,   //Identificador de registro [int]
+    'referencia'=>,   // Pedido en el MarketPlace  [string(30)]
+    'fecha_pedido'=>, // YYYY-MM-DD HH:mm:ss (Formato de 24 hrs)   fecha de creación del pedido [datetime]
+    'fecha_autoriza'=>,   // YYYY-MM-DD HH:mm:ss (Formato de 24 hrs)   fecha de autorizacion del pedido [datetime]
+    'email'=>  'none@mymarket.com',  //[string(50)] 
+    'entregara'=> 'Ulises Rendon Martinez',    // Aquien se dirige el pedido [string(120)]
+    'telefono'=> '',    // 81 5536-2589 [string(20)]
+    'direccion'=> 'Fuentes Verdes # 1250', // [string(100)]
+    'entrecalles'=> 'Cruz con Papagayos' ,    // [string(100)]
+    'colonia'=>     'La esperancita',  // [string(100)]
+    'ciudad'=>      'De Los Cabos',  // [string(100)]
+    'estado'=>      'Baja California Sur', // [string(100)]
+    'observacione'=>,  'Puerta Negra, segundo piso' // [string(200)]
+    'cp'=>    '52896', // [string(5)]  Formato con ceros a la izquierda
+    'envio'=> 95.50,  // Costo de envío en caso de que MPS venda la guia  [decimal(10,2)]
+    'comision'=> 60.00,   // Cargo que realiza el MPS por servicio [decimal(10,2)]
+    'estatus'=> 'OPEN', // Estatus tal cual viene en el MPS    [string(30)]
+    'shipping_id'=> null,    // Aplica para los MPS q¡ue no agrupan los items en un solo pedido [string(20)]
     'detalle'=> [...],   // Arreglo con lineas de pedido por actualizar
     ]
 
     // Detalle de pedido
-    ['sku' => '1258',    // Sku hijo, sellersku
-    'descripcion'=> 'Pintura Berel Verde Esmaltado 4lts',   // Descripcion del producto
-    'cantidad'=> 1,   // Cantidad vendida
-    'precio'=>  2500.00,   // Precio de venta sin iva
-    'color'=> 'Verde',  // Color del producto o variedad
-    'talla'=> '4 Lts',    // Medida de la variacion
-    'referencia'=> '2536985441',    // identificador de registro en el MarketPlace
-    'fulfillment'=> 0 // Si el prodsucto se encuentra en fulfillment  
+    ['sku' => '1258',    // Sku hijo, sellersku [string(20)]
+    'descripcion'=> 'Pintura Berel Verde Esmaltado 4lts',   // Descripcion del producto [string(120)]
+    'cantidad'=> 1,   // Cantidad vendida [int]
+    'precio'=>  2500.00,   // Precio de venta sin iva [decimal(10,2)]
+    'color'=> 'Verde',  // Color del producto o variedad [string(20)]
+    'talla'=> '4 Lts',    // Medida de la variacion [string(10)]
+    'referencia'=> '2536985441',    // identificador de registro en el MarketPlace [string(30)]
+    'fulfillment'=> 0 // Si el producto se encuentra en fulfillment  [tinyint]
     ]
 
 ```
@@ -298,10 +343,10 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 - Recibe arreglo
 ```php
     [
-        $id => 56822, // identificador de pedido
-        $estatus => 'PAID', // Estatus del marketplace
-        $total => 0, // Monto en caso de devolución
-        $pedido_mkt, // Cuando es e-commerce (Shopify) al grabar el pedido devuelve su identificador
+        $id => 56822, // identificador de pedido [int]
+        $estatus => 'PAID', // Estatus del marketplace [string(30)]
+        $total => 0, // Monto en caso de devolución [decimal(10,2)]
+        $pedido_mkt, // Cuando es e-commerce (Shopify) al grabar el pedido devuelve su identificador [bigint]
     ]
 ```
 - Regresaimag registro actualizado
@@ -321,9 +366,9 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 #### Registra feed en caso  de procesamiento en lote 
 ```php
     [
-        'id' => null, // identificador de registro
-        'feed' => '2535-25352-2533', // Identificador de registro en MPS
-        'request' => '<xml>....</xml>' // Texto con peticion 
+        'id' => null, // identificador de registro [int]
+        'feed' => '2535-25352-2533', // Identificador de registro en MPS [string(50)]
+        'request' => '<xml>....</xml>' // Texto con peticion [text]
     ]
 ```
 - Regresa registro insertado
@@ -333,8 +378,8 @@ public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lote
 #### Actualiza feed con respuesta en caso  de procesamiento en lote 
 ```php
     [
-        'id' => null, // identificador de registro
-        'answer' => '<xml>....</xml>' // Texto con peticion 
+        'id' => null, // identificador de registro [int]
+        'answer' => '<xml>....</xml>' // Texto con peticion [text]
     ]
 ```
 - Regresa registro actualizado
