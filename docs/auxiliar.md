@@ -100,7 +100,11 @@ PrivateKey, Token, RefreshToken, etc. ($global=FALSE)
 - `public function addColores($data)`
 
 #### Registro de categorias
--  Recibe un arreglo con la categoria a dar de alta y regresa la categoria registrada.
+- Obtiene listado de categorias del MPS, $categoria es la categoria del MPS
+- `public function getCategoria($categoria='') ` 
+    
+- Recibe un arreglo con la categoria a dar de alta y regresa la categoria registrada.
+- Si la categoría ya se encuentra registrada em el market place, actualizará el registro.
 ```php
         [   'id' => null, // [int]
             'categoria' => "Clave de Categoria en Market", // [string(30)]
@@ -111,8 +115,18 @@ PrivateKey, Token, RefreshToken, etc. ($global=FALSE)
 ```
 - `public function addCategoria($data)`
 
+- Recibe un arreglo con la categoria por actualizar y regresa la categoria registrada." 
+- `public function updCategoria($data)`
+
+- Borrar categorias Recibe id  regresa resumen. Al eliminar la categoría se eliminan los atributos y valores.
+- `public function delCategoria($id)`
+
+
 #### Registro de atributos de categoría
-- Recibe arreglo con atributo
+- Obtiene listado de atributos por categoría de MPS
+- `public function getAtributo($categoria, $atributo='')`
+    
+- Recibe arreglo con atributo, si el atributo existe en la categoría este se actualizará.
 ```php
         $atr = [
             'id'           => null, // Identificador de atributo [int]
@@ -130,8 +144,14 @@ PrivateKey, Token, RefreshToken, etc. ($global=FALSE)
 - Devuelve el registro generado
 - `public function addAtributo($data)`
 
+- Recibe un id  por eliminar y regresa resumen.
+- `public function delAtributo($id)`
+    
 #### Registro de valores de atributo
-- Recibe arreglo de valor 
+-  Obtiene listado de valores por categoria - atributo
+- `public function getValor($categoria, $atributo, $id=0)`
+
+- Recibe arreglo de valor, si el key_id y clave existen, actualizará.
 ```php
         $valor = [
             'id'            => null, // Identificador de registro [int]
@@ -143,6 +163,9 @@ PrivateKey, Token, RefreshToken, etc. ($global=FALSE)
 ```
 - Devuelve el registro generado
 - `public function addValor($data)`
+
+- Recibe un arreglo con id  por eliminar y regresa resumen.
+- `public function delValor($id)`
 
 #### Registro de Bitácora
 - Recibe arreglo

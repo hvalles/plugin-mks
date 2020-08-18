@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // En sandbox y producción los datos se recuperaran de la base de datos,
 // para poder hacer las pruebas locales se simula las onsultas y regresa objetos PHP
 
-class Plugin extends MY_Controller {
+class Plugin extends CI_Controller {
     public function __construct(){
         parent::__construct();
         $this->mainModel = 'settings_m';
@@ -26,7 +26,10 @@ class Plugin extends MY_Controller {
     // Incluir cualquier otro parametro que desee almacenar
     // y recuperar para la operación del componente
     private function loadSettings() {
-        $value = array(); // Llenar el arreglo con configuraciones requeridas
+        // Llenar el arreglo con configuraciones requeridas
+        $value = array(
+
+        ); 
         if (!$value)  return [];
         return json_decode($value);
     }
@@ -62,9 +65,11 @@ class Plugin extends MY_Controller {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
-        if ($data)
-            curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query($data));
-        error_log($url);
+        if ($data) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($data));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        }
+        //error_log($url);
         $response = curl_exec($ch);
         
         if (!$response) {
@@ -88,7 +93,7 @@ class Plugin extends MY_Controller {
 
     // Se envía arreglo que se codificara a json antes de grabar
     // los parametros de loadSettings, se incluyen por default
-    // Fuincion Dummy 
+    // Funcion Dummy 
     public function saveSettings($data) {
         return TRUE;
     }
@@ -159,6 +164,7 @@ class Plugin extends MY_Controller {
         $data = $this->data['settings'];
         if (!is_array($data)) $data = (array)$data;
         $this->saveSettings($data);
+        $this->loadSettings();
         return $this->index();
     }
 
@@ -180,7 +186,6 @@ class Plugin extends MY_Controller {
     public function uninstall() {
         return $this->salida(["result" =>"El componente ha sido desinstalado."]);
     }
-
 
     /* -------------------------------------------------- */
     // Secion de funcionalidad particular del componente
