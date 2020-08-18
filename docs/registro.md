@@ -32,5 +32,8 @@ de MarketPlaces.
 
 Cuando se reciba la información, pasará cerca de una seman, y le responderán ya sea confirmandole el nombre del compoenente o asignándole uno nuevo, similar al original o en si defecto la notificación de rechazo así como las causas.
 
+## Requerimientos Excepcionales
+- De ser necesario puede solicitar apoyo a MarketSync para realizar tareas de conexión en las que debamos intervenir, por ejemplo: cuenta de correo de marketsync, No. de celular para registro, ese tipo de información necesaria para la implementación, pero que no le será útil al final del proyecto.
+
 ## Información adicional
 - Arreglo JSON de [componentes](forma.md)

@@ -14,6 +14,7 @@ class Auxiliar {
     public $requiere_upc = FALSE; // Si es TRUE, las variaciones que no cuenten con UPC se excluirán.
     public $requiere_marca = FALSE; // Si es TRUE, los productos que no cuenten con el empate de marcas se excluiran
     public $requiere_color = FALSE; // Si es TRUE, las variaciones que no cuenten con el empate de color se excluiran
+    public $requiere_categoria = TRUE; // Si es FALSE el MPS no soporta categorías    
     public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lotes o de uno en uno
 
     /* Devuelve el registro de campos a configurar */
@@ -27,6 +28,7 @@ class Auxiliar {
             'requiere_upc' => $this->requiere_upc,
             'requiere_marca' => $this->requiere_marca,
             'requiere_color' => $this->requiere_color,
+            'requiere_categoria' => $this->requiere_categoria,
             'procesa_lotes' => $this->procesa_lotes
         );
     }
