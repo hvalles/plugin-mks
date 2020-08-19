@@ -5,8 +5,8 @@ class Recurso {
     const IMAGEN = 1;
     const BULLET = 4;
     const VIDEO = 2;
-    public $id; 
-    public $sku;
+    public $id;    // identificafor de registro
+    public $sku;   // Sku hijo 
     public $orden;
     public $url;
     public $recurso_id; // Tipo de Recurso

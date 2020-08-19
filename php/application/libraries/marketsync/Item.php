@@ -17,7 +17,7 @@ class Item {
     public $categoria; // Categoria de MarketSync
     public $filtro; // Solo aplica para Claro
     public $marca; 
-    public $etiquetas;
+    public $etiquetas; // filtros de busqueda en el  mps
     public $modelo;    
 
     // Elementos Externos
