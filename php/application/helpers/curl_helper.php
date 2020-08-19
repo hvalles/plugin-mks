@@ -34,9 +34,11 @@ function callAPI($url, $method="GET", $public, $private, $parameter=[], $data=[]
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
-        if ($data)
-            curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query($data));
-        error_log($url);
+        if ($data) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($data));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        }
+        //error_log($url);
         $response = curl_exec($ch);
         
         if (!$response) {
@@ -45,6 +47,14 @@ function callAPI($url, $method="GET", $public, $private, $parameter=[], $data=[]
             return FALSE;
         }
         curl_close($ch);
-        return json_decode($response);
+        //var_dump($response);
+        try {
+            $res = json_decode($response);
+            if (is_object($res)) return $res->answer;
+            return $res;
+        } catch (\Throwable $th) {
+            return $response;
+        }
+        
     }
 ?>

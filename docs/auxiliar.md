@@ -17,16 +17,21 @@ corporativa.
 #### Configuracion inicial
 
 ```php
-public $cliente = 0;
-public $market = 0;
-public $acepta_html = FALSE;
-public $privada = null; // Llave privada
-public $publica = null; // Llave pública
-public $server = null; // Servidor de API
-public $requiere_upc = FALSE; // Si es TRUE, las variaciones que no cuenten con UPC se excluirán.
-public $requiere_marca = FALSE; // Si es TRUE, los productos que no cuenten con el empate de marcas se excluirán
-public $requiere_color = FALSE; // Si es TRUE, las variaciones que no cuenten con el empate de color se excluirán
-public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lotes o de uno en uno (default).
+
+    public $cliente = 0;
+    public $market = 0;
+    public $acepta_html = FALSE;
+    public $privada = null; // Llave privada
+    public $publica = null; // Llave pública
+    public $server = null; // Servidor de API
+    public $requiere_upc = FALSE; // Si es TRUE, las variaciones que no cuenten con UPC se excluirán.
+    public $requiere_marca = FALSE; // Si es TRUE, los productos que no cuenten con el empate de marcas se excluiran
+    public $requiere_color = TRUE; // Si es TRUE, las variaciones que no cuenten con el empate de color se excluiran
+    public $requiere_categoria = TRUE; // Si es FALSE el MPS no soporta categorías    
+    public $requiere_envio = FALSE; // Si es TRUE el MPS no cobra el envío, lo hace el seller.    
+    public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lotes o de uno en uno
+    public $precio_minimo = 10.0; // Precio mínimo de seguridad del MPS
+
 ```
 
 -  Devuelve el registro de campos a configurar 
@@ -322,6 +327,15 @@ PrivateKey, Token, RefreshToken, etc. ($global=FALSE)
 - Devuelve registro insertado
 - `public function addGuia($data)`
 
+- Devuelve guias sin procesar
+- `public function getGuia()`
+
+- Procesa guías y devuelve registro
+- `public function updGuia($data)`
+
+### Impuestos
+-- Devuelve arreglo con inpuestos
+- `public function getTax()`
 
 #### Agrega registro de pedidos
 - Recibe arreglo

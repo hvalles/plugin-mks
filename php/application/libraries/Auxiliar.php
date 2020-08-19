@@ -1,6 +1,6 @@
 <?php
 
-include_once(APPPATH.'helpers/curl_helper.php');
+require_once(__DIR__.'/../helpers/curl_helper.php');
 class Auxiliar {
 
     const LIMITE_REGISTROS = 50;
@@ -13,9 +13,11 @@ class Auxiliar {
     public $server = null; // Servidor de API
     public $requiere_upc = FALSE; // Si es TRUE, las variaciones que no cuenten con UPC se excluirán.
     public $requiere_marca = FALSE; // Si es TRUE, los productos que no cuenten con el empate de marcas se excluiran
-    public $requiere_color = FALSE; // Si es TRUE, las variaciones que no cuenten con el empate de color se excluiran
+    public $requiere_color = TRUE; // Si es TRUE, las variaciones que no cuenten con el empate de color se excluiran
     public $requiere_categoria = TRUE; // Si es FALSE el MPS no soporta categorías    
+    public $requiere_envio = FALSE; // Si es TRUE el MPS no cobra el envío, lo hace el seller.    
     public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lotes o de uno en uno
+    public $precio_minimo = 10.0;
 
     /* Devuelve el registro de campos a configurar */
     public function getConfig() {
@@ -29,6 +31,8 @@ class Auxiliar {
             'requiere_marca' => $this->requiere_marca,
             'requiere_color' => $this->requiere_color,
             'requiere_categoria' => $this->requiere_categoria,
+            'precio_minimo' => $this->precio_minimo,
+            'requiere_envio' => $this->requiere_envio,
             'procesa_lotes' => $this->procesa_lotes
         );
     }
@@ -228,12 +232,20 @@ class Auxiliar {
     }
 
     /* Obtiene el listado de productos de acuerdo al estatus  */
-    public function getProductos($estatus=-1, $id=0) {
+    public function getProductos($estatus=-1, $id=0, $limit=50) {
         $estatus = (int)$estatus;
         $id = (int)$id;
         $url = $this->server . "productos";
         $params = ['market'=>$this->market, 'filtro'=>$estatus];
-        $res = callAPI($url, "GET", $this->publica, $this->privada, $params, $data);
+        $params['requiere_upc'] = $this->requiere_upc?1:0;
+        $params['requiere_marca'] = $this->requiere_marca?1:0;
+        $params['requiere_color'] = $this->requiere_color?1:0;
+        $params['requiere_categoria'] = $this->requiere_categoria?1:0;        
+        $params['requiere_envio'] = $this->requiere_envio?1:0;        
+        $params['precio_minimo'] = $this->precio_minimo;
+        if ($id) $params['ids'] = $id;
+        if ($limit) $params['limit']=$limit;
+        $res = callAPI($url, "GET", $this->publica, $this->privada, $params);
         return $res;
     }
 
@@ -286,16 +298,15 @@ class Auxiliar {
         $fields = ['id:i', 'market_sku:s20', 'referencia:s20', 'stock:i'];
         $this->checkData($data, ['id']);
         $params = ['market'=>$this->market];
-        $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
+        $res = callAPI($url, "PUT", $this->publica, $this->privada, $params, $data);
         return $res;
     }
 
     /* Elimina el registro del stock */
     public function delStock($id) {
         $url = $this->server . "stock";
-        $data = ['id'=>(int)$id];
-        $params = ['market'=>$this->market];
-        $res = callAPI($url, "DELETE", $this->publica, $this->privada, $params, $data);
+        $params = ['market'=>$this->market, 'id' => (int)$id];
+        $res = callAPI($url, "DELETE", $this->publica, $this->privada, $params);
         return $res;
     }
 
@@ -315,7 +326,7 @@ class Auxiliar {
         $fields = ['id:i','id_mkt:s30', 'url:s500'];
         $this->checkData($data, ['id']);
         $params = ['market'=>$this->market];
-        $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
+        $res = callAPI($url, "PUT", $this->publica, $this->privada, $params, $data);
         return $res;
     }
 
@@ -325,6 +336,14 @@ class Auxiliar {
         $data = ['id'=>(int)$id];
         $params = ['market'=>$this->market];
         $res = callAPI($url, "DELETE", $this->publica, $this->privada, $params, $data);
+        return $res;
+    }
+
+    /* Localiza guias por actualizar */
+    public function getGuia() {
+        $url = $this->server . "guias";
+        $params = ['market'=>$this->market];
+        $res = callAPI($url, "GET", $this->publica, $this->privada, $params);
         return $res;
     }
 
@@ -338,18 +357,17 @@ class Auxiliar {
         return $res;
     }
 
-    /* Actualiza registro de guías, se tienen que incluir todos los campos */
+    /* Actualiza registro de guías */
     public function updGuia($id) {
         $url = $this->server . "guias";
-        $fields = ['id:i','estatus:t'];
-        $this->checkData($data, $fields);
+        $data = ['id'=>(int)$id,'estatus'=>1];
         $params = ['market'=>$this->market];
-        $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
+        $res = callAPI($url, "PUT", $this->publica, $this->privada, $params, $data);
         return $res;
     }
 
     /* Se ingresa registro de pedido */
-    public function addPedidos($data) {
+    public function addPedido($data) {
         $url = $this->server . "pedidos";
         $fields = ['id:i', 'referencia:s30', 'fecha_pedido:d', 'fecha_autoriza:d',
         'email:s50', 'entregara:s120', 'telefono:s20', 'direccion:s100', 
@@ -376,12 +394,12 @@ class Auxiliar {
     public function updPedido($id, $estatus, $total=0, $pedido_mkt=null) {
         $url = $this->server . "pedidos";
         $data = [
-            'id:i' => $id,
-            'estatus:s30' => $estatus,
-            'total:f'   => $total,
-            'orden_id:i'=> $pedido_mkt // No lo incluya si no lova a procesar
+            'id' => $id,
+            'estatus' => $estatus,
+            'total'   => $total,            
         ];
-        $this->checkData($data, $fields);
+        if ($pedido_mkt) $data['orden_id:i'] = $pedido_mkt; // No lo incluya si no lo va a procesar
+        $this->checkData($data, ['id:i','estatus:s30','total:f']);
         $params = ['market'=>$this->market];
         $res = callAPI($url, "PUT", $this->publica, $this->privada, $params, $data);
         return $res;
@@ -395,11 +413,13 @@ class Auxiliar {
     PEDIDO_CAMBIO  // Pedidos que actualizaron el 
     */
 
-    public function getPedidos($filtro=0,$limit=50) {
+    public function getPedido($filtro=0,$referencia='',$limit=50) {
         $filtro = (int)$filtro;
         $url = $this->server . "pedidos";
-        $params = ['market'=>$this->market, 'filtro'=>$filtro, 'limit'=>$limit];
-        $res = callAPI($url, "GET", $this->publica, $this->privada, $params, $data);
+        $params = ['market'=>$this->market, 'filtro'=>$filtro];
+        if ($limit) $params['limit'] = $limit;
+        if ($referencia) $params['referencia'] = $referencia;
+        $res = callAPI($url, "GET", $this->publica, $this->privada, $params);
         return $res;
     }
 
@@ -424,15 +444,23 @@ class Auxiliar {
     }
 
     /* obtiene feeds que aun no han sido marcados como concluidos */
-    public function getFeeds($limit=50) {
+    public function getFeed($limit=50) {
         $filtro = 1;
         $url = $this->server . "feeds";
         $params = ['market'=>$this->market, 'filtro'=>$filtro, 'limit'=>$limit];
-        $res = callAPI($url, "GET", $this->publica, $this->privada, $params, $data);
+        $res = callAPI($url, "GET", $this->publica, $this->privada, $params);
         return $res;
     }
 
-    function chkDate($date, $format = 'Y-m-d HH:mm:ss') {
+    public function getTax() {
+        $url = $this->server . "pedidos/iva";
+        $params = ['market'=>$this->market];
+        $res = callAPI($url, "GET", $this->publica, $this->privada, $params);
+        echo $url;
+        return $res;
+    }
+
+    function chkDate($date, $format = 'Y-m-d H:i:s') {
         DateTime::createFromFormat($format, $date);
         $errors = DateTime::getLastErrors();
         return $errors['warning_count'] === 0 && $errors['error_count'] === 0;
@@ -472,7 +500,7 @@ class Auxiliar {
                     $dt = $f1[1]; // tipo de dato
                     if ($dt[0]=='s' && strlen($v)> (int)str_replace('s','',$dt))
                         throw new Exception(" field ($n) at row [$i] oversize its capacity.");
-                    if ($dt=='i' && (!is_numeric($v)||(int)$v!=$v) && !($n=='id' && is_null($v)))
+                    if ($dt=='i' && (!is_numeric($v)||(int)$v!=$v) && !(in_array($n,['id','shipping_id']) && is_null($v)))
                         throw new Exception(" field ($n) at row [$i] is not a valid integer $v.");
                     if ($dt=='f' && !is_numeric($v))
                         throw new Exception(" field ($n) at row [$i] is not a valid number.");
@@ -480,8 +508,8 @@ class Auxiliar {
                         throw new Exception(" field ($n) at row [$i] is not a valid value.");
                     if ($dt=='t' && (!is_numeric($v) ||  (int)$v > 255))
                         throw new Exception(" field ($n) at row [$i] is not a valid value.");
-                    if ($dt=='d' && !chkDate($v))
-                        throw new Exception(" field ($n) at row [$i] is not a valid date.");
+                    if ($dt=='d' && !$this->chkDate($v))
+                        throw new Exception(" field ($n) at row [$i] is not a valid date. $v");
                     if ($dt=='a' && !is_array($v))
                         throw new Exception(" field ($n) at row [$i] is not a valid array.");
                 }
