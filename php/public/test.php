@@ -6,16 +6,16 @@ class Test  {
 
     private function configura() {
         $data = [
-            'cliente' =>2011, // CLIENT DE DEMOSTRACIÓN
+            'cliente' =>2011, // CLIENTE DE DEMOSTRACIÓN
             'market' => 0, // INSERTAR MARKETID 
-            'server' => '',   //INSERTAR WEB SERVER
+            'server' =>   'http://sandbox.marketsync.mx/mks/',   //INSERTAR WEB SERVER termina en "/"
             'publica'=> '', // INSERTAR LLAVE PUBLICA
             'privada' => '', // INSERTAR LLAVE PRIVADA
-            'requiere_upc' => TRUE,
-            'requiere_marca' => FALSE,
-            'requiere_color' => TRUE,
-            'requiere_categoria' => TRUE,
-            'procesa_lotes' => FALSE
+            'requiere_upc' => TRUE,         // DEPENDE DEL MPS
+            'requiere_marca' => FALSE,      // DEPENDE DEL MPS
+            'requiere_color' => TRUE,       // DEPENDE DEL MPS
+            'requiere_categoria' => TRUE,   // DEPENDE DEL MPS
+            'procesa_lotes' => FALSE        // DEPENDE DEL MPS
         ];
         $this->auxiliar->setConfig($data);
         //var_dump($this->auxiliar->getConfig());
