@@ -18,7 +18,7 @@
 // Recibirá un grupo de productos por Actualizar/Registrar, 
 // siendo respondabilidad  de la librería solamente procesar los elementos dentro de 
 // los limites de la restricción correspondiente. Haga las pausas correspondientes para evitar infracciones 
-// y no exceda la ejecuón en más de 5 minutos por proceso. (Estime el tiempo por registro y calcule un escenario
+// y no exceda la ejecución en más de 5 minutos por proceso. (Estime el tiempo por registro y calcule un escenario
 // pesimista para la cantidad de registros que pueda procesar)
 
 ### Flujo de productos por publicar en Lotes
