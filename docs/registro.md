@@ -15,7 +15,7 @@ Adjuntando la siguiente información:
 - **Instrucciones** Instrucciones (HTML) de instalación del componente.
 - **Campos** (opcional) Arreglo JSON que permite desplegar una forma en el componente para si ejecución.
 - **Campos_registro** (opcional) Arreglo JSON que permite desplegar una forma en el componente para recabar información del usuario final.
-- **Categoria** Categoría en la que radica el Plugin, contacte a MaerketSync para una lista. 
+- **Categoria** Categoría en la que radica el Plugin, contacte a MarketSync para una lista. 
     - MarketPlace 
     - Stock
     - e-commerce
@@ -30,7 +30,7 @@ Ademas de incluir la cuenta de correo electrónico que será utilizada como usua
 esta cuenta al terminar tendrá un rol de "consultor" y le brindará acceso únicamente a las APIS de integración
 de MarketPlaces.
 
-Cuando se reciba la información, pasará cerca de una seman, y le responderán ya sea confirmandole el nombre del compoenente o asignándole uno nuevo, similar al original o en si defecto la notificación de rechazo así como las causas.
+Cuando se reciba la información, pasará cerca de una seman, y le responderán ya sea confirmandole el nombre del compoenente o asignándole uno nuevo, similar al original o en su defecto la notificación de rechazo así como las causas.
 
 ## Requerimientos Excepcionales
 - De ser necesario puede solicitar apoyo a MarketSync para realizar tareas de conexión en las que debamos intervenir, por ejemplo: cuenta de correo de marketsync, No. de celular para registro, ese tipo de información necesaria para la implementación, pero que no le será útil al final del proyecto.

@@ -11,7 +11,7 @@ Se espera que al final se entreguen los fuentes de la integración de:
 1. El Plugin de Autorización de Acceso del cliente al Marketplace
 2. La librería que implemente la interfaz de Market.php para realizar la conexión con el MPS.
 3. La documentación correspondiente a la integración y lo referido en el archivo readme.txt
-4. La documentación correspondiente al registro de la cuanta y el proceso para iniciar operaciones con el MPS.
+4. La documentación correspondiente al registro de la cuenta y el proceso para iniciar operaciones con el MPS.
 5. Los resultados de las pruebas elaboradas por su implementación.
 
 ### Inicio de flujo
@@ -47,7 +47,7 @@ Como es el estándar de CI los modelos se ubican en `application/models`.
 Todos los controladores deberán de heredar de My_Controller, ya que los mecanismos de seguridad se aplican en el mismo
 
 ```php
-class Plugin extends Plugin {}
+class PluginX extends Plugin {}
 
 ```
 ├── application
@@ -73,18 +73,18 @@ class Plugin extends Plugin {}
                 
 **No heredar del mismo será motivo de rechazo en su aplicación.**
 
-### Pra los integradors de MarketPlaces
+### Para los integradores de MarketPlaces
 1. Se debe de crear un plugin que permita recopilar la información del cliente
-2. El mismo se comunicara con el MarketPlace que lo permita para autorizar el acceso
+2. El mismo se comunicará con el MarketPlace que lo permita para autorizar el acceso
 del componente a los datos del cliente.
-3. De no haber un punto dos viable, se deberá derecopilar toda la información necesaria para efectuar la integración en el punto 1.
-4. De haber una llmada Callback desde el MarketPlace, apuntará al mismo plugin que tiene acceso de preferencia a una función llamada callback.
-5. Al terminar debera hacer una llamada a verificar los settings globales de su plugin y almacenarlos en caso de que no existan, así como los del cliente en cuestión para que se almacene la configuración necesaria para acceder a los datos del cliente en el MPS.
+3. De no haber un punto dos viable, se deberá de recopilar toda la información necesaria para efectuar la integración en el punto 1.
+4. De haber una llamada Callback desde el MarketPlace, apuntará al mismo plugin que tiene acceso de preferencia a una función llamada callback.
+5. Al terminar deberá hacer una llamada a verificar los settings globales de su plugin y almacenarlos en caso de que no existan, así como los del cliente en cuestión para que se almacene la configuración necesaria para acceder a los datos del cliente en el MPS.
 6. Entre los datos globales son los comunes a todos los clientes como:
     - Url del portal
     - Identificador de MarketPlace
     - Si la marca,color,upc son requeridos, etc.
-    - Entre otrosd
+    - Entre otros.
 7. Entre los datos de cada cliente puede encontrar:
     - SellerID
     - Token
@@ -96,5 +96,6 @@ del componente a los datos del cliente.
 - No tendrá acceso directo a la base de datos, a menos de que le sea concedido a través de un convenio directo con MarketSync
 - El intento de acceso directo a la base de datos, sin la autorización correspondiente,le generará sanciones y/o revocación de cuenta.
 - Los accesos a la base de datos se realizan a través de la [API](https://github.com/hvalles/marketsync).
+- También podra acceder a través de la libería Auxiliar.
 - Solamente podrá acceder a aquellas cuentas a las que el usuario responsable le otorgue acceso.
 

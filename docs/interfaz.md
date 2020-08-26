@@ -2,14 +2,14 @@
 ## Librería de acoplamiento de Marketplaces a MarketSync
  Todas las librerías deberán de cumplir con la interfaz en lo posible.
  Las librerías hacen referencia a una librería auxiliar para movimientos 
- hacia la base de datos revise la especificación correspondiente en el
+ hacia la base de datos; revise la especificación correspondiente en el
  siguiente [enlace](auxiliar.md):
 
 ## Generalidades
  Todas las llamadas a menos de que se especifique otra cosa serán hacia 
  el MarketPlace en cuestión. 
 
-### Todas las llamadas POST,PUT,DELETE deberan de generar un registro en la
+### Todas las llamadas POST,PUT,DELETE deberán de generar un registro en la
  bitacora y reportar el estatus de la misma addBitacora($data);
  La llamada GET a recuperar pedidos también genera un registro.
  En caso de error este será almacenado como parte de la bitácora.
@@ -18,8 +18,7 @@
  Recibirá un grupo de productos por Actualizar/Registrar, 
  siendo respondabilidad  de la librería solamente procesar los elementos dentro de 
  los limites de la restricción correspondiente. Haga las pausas correspondientes para evitar infracciones 
- y no exceda la ejecuón en más de 5 minutos por proceso. (Estime el tiempo por registro y calcule un escenario
- pesimista para la cantidad de registros que pueda procesar)
+ y no exceda la ejecución en más de 5 minutos por proceso. (Estime el tiempo por registro y calcule un escenario pesimista para la cantidad de registros que pueda procesar)
 
 ### Flujo de productos por publicar en Lotes
  1. Se agrega el producto con estatus ITEM_SIN_CONFIRMAR
@@ -32,7 +31,7 @@
 
 ### Precios
  Los precios ya incluyen impuestos, se espera que el MarketPlace lo publique como tal y
- que no cargue impuestos adicionales
+ que no cargue impuestos adicionales (Verifique que configuración tiene que tener el cliente para que este sea el caso).
 
  ### Descripciones
   Normalmente el MarketPlace solamente tiene un campo de nombre y uno de ficha técnica, si no hay 
@@ -43,26 +42,26 @@
   3. Si no admiten carácteres especiales o HTML, se tendrá que limpiar de estos caracteres y agregar los saltos de línea correspondientes, antes de enviar
   la petición de guardar el producto.
   4. Invariablemente todos los MarketPlaces pueden tener un pie de ficha, que es el mismo para todos los
-  productos Auxiliar getFirma() y este será concatenado al final de la ficha con las mismas restricciones preestablecidas.
+  productos Auxiliar getSettings() "key=descripcion"  y este será concatenado al final de la ficha con las mismas restricciones preestablecidas.
   5. Si por alguna razón el total de la ficha o nombre excede las dimensiones de los campos, serán truncadas a la última palabra completa del campo, que no rebase la restricción de longitud.
-  6. Los Bullets se registran por variante del sku, al ifual que las imágenes, pero normalmente los MPS, no cambian estas definiciones al seleccionar una variante, por lo que usualmente podrá seleccionar los bullates de la primer variante para publicar.
+  6. Los Bullets se registran por variante del sku, al igual que las imágenes, pero normalmente los MPS, no cambian estas definiciones al seleccionar una variante, por lo que usualmente podrá seleccionar los bullates de la primer variante para publicar.
 
 ### Imágenes
-  Los Marketplaces podrán generar identificadores independientes para las imágenes, hay que revisar esto para gregarlos al arreglo que inserta/actualiza las imágenes correspondientes.
+  Los Marketplaces podrán generar identificadores independientes para las imágenes, hay que revisar esto para agregarlos al arreglo que inserta/actualiza las imágenes correspondientes.
 
 ### UPC/EAN
-  Los MarketPlaces pueden tener restricciones que indiquen que se requiere un UPC/EAN válido para aprobar la publicación, cuando mande llamar el listado de productos a publicar debe de especificar el filtro $gtin=TRUE,
-  para excluir los que no cumplan con el criterio.
+  Los MarketPlaces pueden tener restricciones que indiquen que se requiere un UPC/EAN válido para aprobar la publicación, cuando mande llamar el listado de productos a publicar debe de especificar el filtro $gtin=TRUE, para excluir los que no cumplan con el criterio.
 
 ### Mapeo de Atributos
   El MarketPlace contará con su propia lista de atributos, los atributos usualmente van a diferir en el nombre
-  entre MPS, por lo que al registrar el atributo anexará al campo mapa, la lista de atributos que reulten equivalentes ejemplo:
+  entre MPS, por lo que al registrar el atributo anexará al campo mapa, la lista de atributos "estándar" que reulten equivalentes ejemplo:
   1. El atribito de ejemplo es SIZE
   2. Sin embargo en los atributos estandar se le conoce como SIZE, FLAT_SIZE, WEAR_SIZE, etc.
-  3. El mapero sera una cadena de la siguiente forma "SIZE,%_SIZE"
+  3. El mapeo será una cadena de la siguiente forma "SIZE,%_SIZE"
   4. Los posibles atributos serán separados por coma al llenar el valor de los atributos en su librería
-Enviará a la función Auxiliar el equivalente y la función regresará el primer valor que se localice la condición establecida (es decir si el atributo existe y tiene valor ese será).
-  5. Para el caso de los atributos que comiencen con '%' este se utilizara como comodín para la búsqueda de posibles valores.
+La función Auxiliar regresará junto con el producto, todos los atributos estándar que tengan un valor y usted elaborará, la funcionalidad para identificarlos en base al mapeo y haciendo un ciclo entre los atributos de la categoría del MPS (revise la funcion auxiliar que regresa los atributos por categoría).
+  5. Para el caso de lo mapeos que comiencen con '%' este se utilizará como comodín para la búsqueda de posibles valores.
+  6. Para el caso de los atributos que comiencen con $, se utilizará para obtener una propiedad del registro no así un valor de atributo (Ej. $nombre).
   
 
  ```php
@@ -83,11 +82,11 @@ interface iMarketPlace {`
     const ITEM_SIN_PUBLICAR = -1; 
     const ITEM_DESHABILITADO = -2; 
 
-    const ITEM_NOMBRE_CAMBIO = 2; 
+    const ITEM_NOMBRE_CAMBIO = 2;  // Usualmente no solo el nombre cambia, si no algún valor del registro
     const ITEM_PRECIO_CAMBIO = 4; 
     const ITEM_STOCK_CAMBIO = 8; 
     const ITEM_IMAGEN_CAMBIO = 16; 
-    const ITEM_VARIACION = 32; 
+    const ITEM_VARIACION = 32; // PRODUCTO CON VARIACIONES NUEVAS ONO REGISTRADAS
 
     // Estatus de Requests
     const REQUEST_CANCEL = 0;
@@ -119,8 +118,7 @@ interface iMarketPlace {`
 - `public  function getStatus();`
 
 ### Función de entrada, siempre será ejecutada
- El cliente serà utilizado para obtener la
- configuración de conexión y las llaves
+ El cliente será utilizado para obtener la  configuración de conexión y las llaves
  Esta llamada se realiza siempre antes de inciar la primer consulta
  En Auxiliar debe de llamar 
 - setConfig($data);
@@ -131,10 +129,11 @@ almacenada en la base de datos.
 - `public  function SignIt($cliente);`
 
 ### Rutina de refrezco del Token
- Algunas apis lo requieren, de no necesitarse devolver NOT_IMPLEMENTED 
+ Algunas apis lo requieren, de no necesitarse devolver NOT_IMPLEMENTED,
+ dependiendo el tiempo de refrezco se hara el mismo, ejemplo si el MPS solicita un vambio de Token cada 3.5 horas, debe de realizar el cambio faltando entre 15 y 20 minutos o cuando se encuentre ya expirado.
 - `public  function refresh();`
 
-### Devolverá la dirección especifica de la llamada al módulo
+### Devolverá la dirección específica de la llamada al módulo
  El servidor debio de ser cargado en SignIt desde la configuración
  En este punto se valida la caducidad del Token y se manda a llamar refresh 
  de ser necesario.
@@ -149,9 +148,9 @@ almacenada en la base de datos.
 - `public  function getCategorias($id=FALSE, $save=FALSE);`
 
 ### Obtendrá la lista de atributos correspondientes a la
- categoría dek MarketPlace inficada, así como sus posibles 
+ categoría del MarketPlace identificada, así como sus posibles 
  valores, válidos en caso de que existan, de ser $save TRUE,
- almacenara la informacion con un llamado a 
+ almacenará la informacion con un llamado a 
  - addAtributo($data). 
  - En el campo mapa debe de especificar la lista de atributos estandár que
 pueden utilizarse para alimentar el valor del atributo.
@@ -175,13 +174,13 @@ pueden utilizarse para alimentar el valor del atributo.
 ### Obtiene el producto desde el MarketPlace, 
  si es necesario realizar, más de una llamada para obtener toda la información
  se realizará  y devolverá el objeto de acuerdo a la especificación en: 
- Clase Productos
+ Clase Item
 - `public  function getProducto($id);`
 
 ### Obtendrá un listado con los identificadores del producto en el MarketPlace
  Haciendo un recorrido de acuerdo a:
  limit : cantidad de registros
- offset: grupo de registros a saltar antes de comenzar a descaregar
+ offset: grupo de registros a saltar antes de comenzar a descargar
  page: algunos no tienen las funciones de limit y offset en su lugar usan un token
  activos: descargar solamente los activos 
 - `public  function getProductos($limit = 100, $offset = 0, $page='', $activos=FALSE);`
@@ -189,14 +188,14 @@ pueden utilizarse para alimentar el valor del atributo.
 ### Recibirá un arreglo de productos a publicar
  Realizará las llamadas correspondientes a su publicación, ya sea uno por uno o
  En Lotes.
- Cada intento agregará un registro el la bitacora, ya sea positivo o no addBitacora($data);
+ Cada intento agregará un registro en la bitacora, ya sea positivo o no addBitacora($data);
  De ser confirmado el registro se harán las siguientes llamadas:
 - addProducto($data); // Si el producto no fue confirmado, en estatus se podrá 99 = Sin confirmar 
 - addStock($data); // Debe de ser llamado por cada variacion registrada
 
-#### Los productos pueden tener varios tipo de variaciones SIZE, COLOR, PATTERN, UNICO o CUSTOM
+#### Los productos pueden tener diferentes tipos de variaciones SIZE, COLOR, PATTERN, UNICO o CUSTOM
  Si el MarketPlace no permite las variaciones de PATTERN, UNICO o CUSTOM
- Se deberá de crear un Producto por cada hijo, siendo el sku del hijo el que se registre.
+ Se deberá de crear una publicación (Producto) por cada hijo, siendo el sku del hijo el que se registre.
  y se deberán hacer sus llamadas correspondientes a addProducto y addStock
 
 - Auxiliar getProductos($estatus=iMarketPlace::ITEM_SIN_PUBLICAR); 
@@ -212,7 +211,7 @@ Para obtener un listado de a lo más 100 productos sin publicar
 - addBitacora($data);
 - `public  function putProductos();`
 
-### Recibe un arreglo de productos por cerrar su publicación r y hace las llamadas correspondientes
+### Recibe un arreglo de productos por cerrar su publicación y hace las llamadas correspondientes
  Por cada actualización llamar en Auxiliar a:
 - updProducto($data); // estatus ITEM_DESHABILITADO
 - addBitacora($data);
@@ -229,7 +228,7 @@ Para obtener un listado de a lo más 100 productos sin publicar
 - delProducto($data);
 - addBitacora($data);
 - `public  function deleteProductos($item);`
-- Esta función eliminará la tabla secundria de Stock del producto y de las imagenes registradas
+- Esta función eliminará la tabla secundaria de Stock del producto y de las imagenes registradas
 
 ### Solicita los productos por actualizar precio y realiza las llamadas correspondientes al MarketPlace
  getProductos($estatus=iMarketPlace::ITEM_PRECIO_CAMBIO); 
@@ -262,14 +261,14 @@ Para obtener un listado de a lo más 100 productos sin publicar
 - addBitacora($data);
 - `public  function deleteVariacion($variacion);`
 
-### Solicita las guias de los pedidos correspondientes (la referencia es del MarketPlace)
+### Solicita las guías de los pedidos correspondientes (la referencia es del MarketPlace)
  Por cada actualización llamar en Auxiliar a:
 - addGuia($data);
 - addBitacora($data);
 - `public  function getGuias($pedidos);`
 
 ### Algunos MarketPlaces se les tiene que indicar la guía, ya que ellos no la proporcionan
- Esta función agregará la guía al marketplace en a referencia correspondiente
+ Esta función agregará la guía al marketplace en la referencia correspondiente
  Por cada actualización llamar en Auxiliar a:
 - updGuia($id);
 - addBitacora($data);
@@ -297,7 +296,7 @@ Para obtener un listado de a lo más 100 productos sin publicar
 
 ### Actualiza el estatus de una lista de pedidos en caso de cambio con respecto al pedido consultado.
  Llamada Auxiliar para obtener listado de pedidos getPedidos($limit=50)
- Automáticamente limitara la llamada a los últimos 30 días o el limite explicito, 
+ Automáticamente limitará la llamada a los últimos 30 días o el límite explicito, 
  el orden será la fecha de creación del pedido
  Por cada actualización llamar en Auxiliar a:    
 - updPedido($pedido, $estatus, $total=0, $pedido_mkt=null); // estatus actualizado
