@@ -36,6 +36,7 @@ class Test  {
         //var_dump($this->auxiliar->getConfig());
     }
 
+    // Obtiene settings globales
     private function settings() {
         $data = $this->auxiliar->getSetting();
         if ($data) {
@@ -59,6 +60,7 @@ class Test  {
         }
     }
 
+    // Registro de Marcas
     private function marcas() {
         print __METHOD__.PHP_EOL;
         $data = [
@@ -72,6 +74,7 @@ class Test  {
         var_dump($this->auxiliar->addMarcas($data));
     }
 
+    // Registro de colores
     private function colores() {
         $data = [
             ['color_base'=>"ROJO",'color_market'=>"Red"],
@@ -94,6 +97,7 @@ class Test  {
         var_dump($this->auxiliar->addColores($data));
     }
 
+    // Registro de categorías
     private function categorias() {
         $last = 0;
         $cat = '';
@@ -141,6 +145,7 @@ class Test  {
 
     }
 
+    // Registro atributos de categoría
     private function atributos() {
         $cat = 0;
         $rows = $this->auxiliar->getCategoria();
@@ -206,6 +211,7 @@ class Test  {
         }
     }
 
+    // Agrego valores de atributos
     private function valores() {
         $atr = '';
         $rows = $this->auxiliar->getAtributo('015000010', 'COLOR');
@@ -235,6 +241,7 @@ class Test  {
         var_dump($res);
     }
 
+    // Registro en bitacoras
     private function bitacoras() {
 
         $data = [
@@ -248,6 +255,7 @@ class Test  {
 
     }
 
+    // alta de productos en MPS
     private function productos() {
         // 10 items 
         $items = $this->auxiliar->getProductos(Test::ITEM_SIN_PUBLICAR ,0,0); 
@@ -337,6 +345,7 @@ class Test  {
         }
     }
 
+    // Recuperar pedidos
     private function pedidos() {
         $ped = null;
         $res = $this->auxiliar->getPedido();
@@ -388,6 +397,7 @@ class Test  {
     
     }
 
+    // Actualización de feeds en caso de que se administren las altas en lotes
     private function feeds() {
         $res = $this->auxiliar->getfeed();
 
@@ -413,6 +423,7 @@ class Test  {
         }
     }
 
+    // Subir guias (usualmente las proporciona el MPS)
     private function guias() {
         $ped = null;
         $res = $this->auxiliar->getPedido();
@@ -449,6 +460,7 @@ class Test  {
         }
     }
 
+    // Diferencia en precios
     private function precios() {
         // 10 items 
         $items = $this->auxiliar->getProductos(Test::ITEM_PRECIO_CAMBIO ,0,10); 
@@ -472,6 +484,7 @@ class Test  {
     }
 
 
+    // Cambios en nombre, ficha, y/o atributos
     private function cambios() {
         $items = $this->auxiliar->getProductos(Test::ITEM_NOMBRE_CAMBIO ,0,10); 
         
@@ -485,6 +498,8 @@ class Test  {
         }
     }
 
+
+    // Diferencis en stock
     private function stock() {
         $items = $this->auxiliar->getProductos(Test::ITEM_STOCK_CAMBIO,0,10); 
         
@@ -498,6 +513,7 @@ class Test  {
         }
     }
     
+    // Cambios en imagenes
     private function imagenes() {
         $items = $this->auxiliar->getProductos(Test::ITEM_IMAGEN_CAMBIO,0,10); 
         foreach ($items as $item) {
@@ -543,6 +559,7 @@ class Test  {
         }
     }
 
+    // Agregar nuevas variaciones
     private function variaciones() {
         $items = $this->auxiliar->getProductos(Test::ITEM_VARIACION ,0,10); 
         foreach ($items as $item) {
