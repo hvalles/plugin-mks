@@ -4,13 +4,28 @@ require_once(__DIR__.'/../application/libraries/Auxiliar.php');
 
 class Test  {
 
+    // Estatus de producto    
+    const ITEM_SIN_CONFIRMAR = 99; 
+    const ITEM_CONFIRMADO = 1; 
+    const ITEM_SIN_IMAGEN = 98; 
+    const ITEM_SIN_RELACION = 97; 
+    const ITEM_PENDIENTE = 96; 
+    const ITEM_SIN_PUBLICAR = -1; 
+    const ITEM_DESHABILITADO = -2; 
+
+    const ITEM_NOMBRE_CAMBIO = 2; 
+    const ITEM_PRECIO_CAMBIO = 4; 
+    const ITEM_STOCK_CAMBIO = 8; 
+    const ITEM_IMAGEN_CAMBIO = 16; 
+    const ITEM_VARIACION = 32; 
+
     private function configura() {
         $data = [
             'cliente' =>2011, // CLIENTE DE DEMOSTRACIÓN
-            'market' => 0, // INSERTAR MARKETID 
-            'server' =>   'http://sandbox.marketsync.mx/mks/',   //INSERTAR WEB SERVER termina en "/"
-            'publica'=> '', // INSERTAR LLAVE PUBLICA
-            'privada' => '', // INSERTAR LLAVE PRIVADA
+            'market' => 3, // INSERTAR MARKETID 
+            'server' =>   'http://localhost:5000/mks/',   //INSERTAR WEB SERVER termina en "/"
+            'publica'=> '6cbe4ae135ace0e7901ec85595bf7f5d', // INSERTAR LLAVE PUBLICA
+            'privada' => 'a3d5f0fa1a82517709579dda6074a0018c03f949', // INSERTAR LLAVE PRIVADA
             'requiere_upc' => TRUE,         // DEPENDE DEL MPS
             'requiere_marca' => FALSE,      // DEPENDE DEL MPS
             'requiere_color' => TRUE,       // DEPENDE DEL MPS
@@ -59,10 +74,20 @@ class Test  {
 
     private function colores() {
         $data = [
-            ['color_base'=>"Rojo",'color_market'=>"Red"],
-            ['color_base'=>"Azul",'color_market'=>"Blue"],
+            ['color_base'=>"ROJO",'color_market'=>"Red"],
+            ['color_base'=>"AZUL",'color_market'=>"Blue"],
+            ['color_base'=>"MULTICOLOR",'color_market'=>"Multicolor"],
+            ['color_base'=>"BLANCO",'color_market'=>"White"],
+            ['color_base'=>"NEGRO",'color_market'=>"Black"],
+            ['color_base'=>"AMARILLO",'color_market'=>"Yellow"],
+            ['color_base'=>"ROSA",'color_market'=>"Pink"],
+            ['color_base'=>"BEIGE",'color_market'=>"Beige"],
+            ['color_base'=>"GRIS",'color_market'=>"Gray"],
+            ['color_base'=>"ORO",'color_market'=>"Gold"],
+            ['color_base'=>"PLATA",'color_market'=>"Silver"],
+            ['color_base'=>"CAFE",'color_market'=>"Brown"],
             ['color_base'=>"Dummy",'color_market'=>"Dummy"],
-            ['color_base'=>"Verde",'color_market'=>"Green"],
+            ['color_base'=>"VERDE",'color_market'=>"Green"],
             ['color_base'=>"Dummy",'color_market'=>""],
         ];
         print "addColores...".PHP_EOL;
@@ -223,9 +248,9 @@ class Test  {
 
     }
 
-
     private function productos() {
-        $items = $this->auxiliar->getProductos(0,176532);
+        // 10 items 
+        $items = $this->auxiliar->getProductos(Test::ITEM_SIN_PUBLICAR ,0,0); 
         
         foreach ($items as $item) {
             print $item->id.' '.$item->nombre.PHP_EOL;
@@ -233,29 +258,31 @@ class Test  {
                 $data = [
                     'id' =>$item->market->id,
                     'product_id' => $item->id,
-                    'precio' => 870.0,
-                    'oferta' => 870.0,
-                    'envio'  => 50,
+                    'precio' => (float)$item->precios->precio+5,
+                    'oferta' => (float)$item->precios->oferta+5,
+                    'envio'  => (float)$item->precios->envio,
                     'market_sku' => $item->sku,
                     'transaction_id' => 0,
                     'referencia' => '',
                     'estatus' => 1 
                 ];
-                var_dump($this->auxiliar->updProducto($data));
+                //var_dump($this->auxiliar->updProducto($data));
+                $this->auxiliar->updProducto($data);
             } else {
                 $data = [
                     'id' =>null,
                     'product_id' => $item->id,
-                    'precio' => $item->precios->precio,
-                    'oferta' => $item->precios->oferta,
-                    'envio'  => $item->precios->envio,
+                    'precio' => (float)$item->precios->precio,
+                    'oferta' => (float)$item->precios->oferta,
+                    'envio'  => (float)$item->precios->envio,
                     'market_sku' => $item->sku,
                     'transaction_id' => 0,
                     'referencia' => '',
-                    'estatus' => 0 
+                    'estatus' => 1 
                 ];
     
-                var_dump($this->auxiliar->addProducto($data));
+                //var_dump($this->auxiliar->addProducto($data));
+                $this->auxiliar->addProducto($data);
             }
             $res = null;
             foreach ($item->variaciones as $v) {
@@ -422,6 +449,124 @@ class Test  {
         }
     }
 
+    private function precios() {
+        // 10 items 
+        $items = $this->auxiliar->getProductos(Test::ITEM_PRECIO_CAMBIO ,0,10); 
+        
+        foreach ($items as $item) {
+            print $item->id.' '.$item->nombre.' '.$item->precios->precio.' / '.
+            $item->precios->previo_precio.PHP_EOL;
+            $data = [
+                'id' =>$item->market->id,
+                'product_id' => $item->id,
+                'precio' => (float)$item->precios->precio,
+                'oferta' => (float)$item->precios->oferta,
+                'envio'  =>  (float)$item->precios->envio,
+                'market_sku' => $item->sku,
+                'transaction_id' => 0,
+                'referencia' => '',
+                'estatus' => 1 
+            ];
+            $this->auxiliar->updProducto($data);
+        }
+    }
+
+
+    private function cambios() {
+        $items = $this->auxiliar->getProductos(Test::ITEM_NOMBRE_CAMBIO ,0,10); 
+        
+        foreach ($items as $item) {
+            print $item->id.' '.$item->nombre.PHP_EOL;
+            $data = [
+                'id' =>$item->market->id,
+                'product_id' => $item->id,
+            ];
+            $this->auxiliar->updProducto($data);
+        }
+    }
+
+    private function stock() {
+        $items = $this->auxiliar->getProductos(Test::ITEM_STOCK_CAMBIO,0,10); 
+        
+        foreach ($items as $item) {
+            print $item->id.' '.$item->nombre.PHP_EOL;
+            foreach($item->variaciones as $v) {
+                if ($v->id_mk && (int)$v->stock != (int)$v->stock_mk) { // Actualiza con "id_mk"
+                    var_export($this->auxiliar->updStock(["id" => $v->id_mk, "stock"=>$v->stock]));
+                }
+            }
+        }
+    }
+    
+    private function imagenes() {
+        $items = $this->auxiliar->getProductos(Test::ITEM_IMAGEN_CAMBIO,0,10); 
+        foreach ($items as $item) {
+            print $item->id.' '.$item->nombre.PHP_EOL;
+            print "*****************************".PHP_EOL;
+            foreach($item->variaciones as $v) {
+                print $v->sku.PHP_EOL;
+                foreach ($v->imagenes as $i) {
+                    print $i->id.' '.$i->orden.' '.$i->previo_id.' '.$i->previo_id.PHP_EOL;
+                    print $i->url.PHP_EOL;
+                    print $i->previo_url.PHP_EOL;
+                    print "----------------------------".PHP_EOL;
+                    // Hay que agregar imagen
+                    if ($i->id && is_null($i->previo_id)) {
+                        $data = [
+                            'id' => null,
+                            'product_id' => $item->id,
+                            'sku' => $v->sku,
+                            'orden' => $i->orden,
+                            'id_mkt' => substr(md5($i->url),0,30), 
+                            'url' => $i->url
+                        ];
+                        var_export($this->auxiliar->addImagen($data));
+                    }
+
+                    // Hay que eliminar imagen 
+                    if (is_null($i->id) && $i->previo_id) {
+                        var_export($this->auxiliar->delImagen($i->previo_id));
+                    }
+
+                    // Hay que actualizar imagen
+                    if ($i->id && $i->previo_id && $i->url != $i->previo_url) { 
+                        // Actualiza con "previo_id"
+                        $data = [
+                            'id' => $i->previo_id,
+                            'id_mkt' => substr(md5($i->url),0,30), 
+                            'url' => $i->url
+                        ];
+                        var_export($this->auxiliar->updImagen($data));
+                    }
+                }
+            }
+        }
+    }
+
+    private function variaciones() {
+        $items = $this->auxiliar->getProductos(Test::ITEM_VARIACION ,0,10); 
+        foreach ($items as $item) {
+            print $item->id.' '.$item->nombre.PHP_EOL;
+            print "*****************************".PHP_EOL;
+            // Variaciones agregadas
+            foreach($item->variaciones as $v) {
+                if (is_null($v->id_mk)) {
+                    print $v->sku.PHP_EOL;
+                    $data = [
+                        'id' => null,
+                        'product_id' => $item->id,
+                        'sku' => $v->sku,
+                        'stock_id' => $v->id,
+                        'market_sku' => '', // En caso de requerirse 
+                        'referencia' => '', // Em caso de requerirse
+                        'stock' => $v->stock,
+                    ];
+                    var_dump($this->auxiliar->addStock($data));
+                }
+            }
+        }
+
+    }
 
 
     public function check() {
@@ -433,7 +578,7 @@ class Test  {
         );
 
         foreach ($methods as $m) {
-            print $m->name."...".PHP_EOL;
+            print PHP_EOL.$m->name."...".PHP_EOL;
             $this->{$m->name}();
         }
     }

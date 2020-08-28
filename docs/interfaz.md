@@ -100,7 +100,7 @@ interface iMarketPlace {`
 
     // Estatus Pedidos
     const PEDIDO_CANCELADO = 0;
-    const PEDIDO_ABIERTO = 1; // YA PAPGADO Y LISTO PARA ENTREGAR
+    const PEDIDO_ABIERTO = 1; // YA PAGADO Y LISTO PARA ENTREGAR
     const PEDIDO_ENVIADO = 2;
     const PEDIDO_ENTREGADO = 3;
     const PEDIDO_DEVUELTO = -1;
