@@ -200,6 +200,7 @@ pueden utilizarse para alimentar el valor del atributo.
 
 - Auxiliar getProductos($estatus=iMarketPlace::ITEM_SIN_PUBLICAR); 
 Para obtener un listado de a lo más 100 productos sin publicar
+- En caso de que los productos se procesen en lotes, en esta función, deberá de realizar las operaciones correspondeites para la actualización de imágenes, variaciones, etc.
 - `public  function postProductos();`
 
 ### Llegará un listado de productos por actualizar y se hará las llamadas correspondientes
@@ -368,7 +369,7 @@ Se obtiene los productos con imagenes por atualizar a traves de la funcion getPr
  El tipo indica si se solicita Ticket/Pregunta
 - `public  function getTickets($id="", $save=FALSE, $tipo='Ticket', $limit=50, $offset=0);`
 
-### Obtiene un listaado de Anuncios/Notificaciones/Actualizaciones/Otros que informa 
+### Obtiene un listado de Anuncios/Notificaciones/Actualizaciones/Otros que informa 
  el MarketPkace.
  Si el $id es diferente a "", devuelve el registro solicitado
  Si el parámetro $save es TRUE hará una llamada auxiliar a saveNotifiction($data)
