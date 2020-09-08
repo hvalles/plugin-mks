@@ -5,7 +5,7 @@ class Item {
     public $id; 
     public $nombre;
     public $descripcion; // Descripcion corta
-    public $ficha;  // Dicha técnica
+    public $ficha;  // Ficha técnica
     
     public $alto; // alto del producto
     public $ancho; // ancho del producto

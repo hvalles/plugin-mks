@@ -152,6 +152,7 @@ almacenada en la base de datos.
  valores, válidos en caso de que existan, de ser $save TRUE,
  almacenará la informacion con un llamado a 
  - addAtributo($data). 
+ - addValor($data). 
  - En el campo mapa debe de especificar la lista de atributos estandár que
 pueden utilizarse para alimentar el valor del atributo.
 - `public  function getAtributos($categoria, $save=FALSE);`
@@ -198,19 +199,20 @@ pueden utilizarse para alimentar el valor del atributo.
  Se deberá de crear una publicación (Producto) por cada hijo, siendo el sku del hijo el que se registre.
  y se deberán hacer sus llamadas correspondientes a addProducto y addStock
 
+- En caso de que $item = FALSE se llanará a 
 - Auxiliar getProductos($estatus=iMarketPlace::ITEM_SIN_PUBLICAR); 
 Para obtener un listado de a lo más 100 productos sin publicar
 - En caso de que los productos se procesen en lotes, en esta función, deberá de realizar las operaciones correspondeites para la actualización de imágenes, variaciones, etc.
-- `public  function postProductos();`
+- `public  function postProductos($item=FALSE);`
 
 ### Llegará un listado de productos por actualizar y se hará las llamadas correspondientes
  de los datos del producto, descripción y atributos.
- getProductos($estatus=iMarketPlace::ITEM_NOMBRE_CAMBIO); 
+ en caso de que $item = FALSE se llanará a getProductos($estatus=iMarketPlace::ITEM_NOMBRE_CAMBIO); 
  Para obtener un listado de productos ya publicados por actualizar
  Por cada actualización llamar en Auxiliar a:
 - updProducto($data);
 - addBitacora($data);
-- `public  function putProductos();`
+- `public  function putProductos($item=FALSE);`
 
 ### Recibe un arreglo de productos por cerrar su publicación y hace las llamadas correspondientes
  Por cada actualización llamar en Auxiliar a:

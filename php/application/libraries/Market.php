@@ -109,10 +109,10 @@ interface iMarketPlace {
 
     ### Recibirá un arreglo de productos a publicar
     ### Los productos pueden tener varios tipo de variaciones SIZE, COLOR, PATTERN, UNICO o CUSTOM
-    public function postProductos();
+    public function postProductos($item=FALSE);
 
     ### Llegará un listado de productos por actualizar y se hará las llamadas correspondientes
-    public function putProductos();
+    public function putProductos($item=FALSE);
 
     ### Recibe un arreglo de productos por cerrar su publicación r y hace las llamadas correspondientes
     public function disableProductos($item);
