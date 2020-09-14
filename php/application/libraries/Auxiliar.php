@@ -4,6 +4,14 @@ require_once(__DIR__.'/../helpers/curl_helper.php');
 class Auxiliar {
 
     const LIMITE_REGISTROS = 50;
+    const EVENTO_AGREGAR = 1;
+    const EVENTO_ACTUALIZAR = 2;
+    const EVENTO_PRECIO_STOCK = 3;
+    const EVENTO_ELIMINAR = 4;
+    const EVENTO_ERROR = 5;
+    const EVENTO_REBUILD = 5;
+    const EVENTO_CONSULTAR = 5;
+
 
     public $cliente = 0;
     public $market = 0;

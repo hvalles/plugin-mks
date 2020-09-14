@@ -63,11 +63,16 @@ function callAPI($url, $method="GET", $public=FALSE, $private=FALSE, $parameter=
             curl_close($ch);
             return FALSE;
         }
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         //var_dump($response);
         try {
             $res = json_decode($response);
-            if (is_object($res) && property_exists($res,'answer')) return $res->answer;
+            if (is_object($res)) {
+                $res->http_code = $http_code;
+            } else {
+                $res['http_code'] = $http_code;
+            }
             return $res;
         } catch (\Throwable $th) {
             return $response;
