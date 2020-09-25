@@ -18,7 +18,7 @@
 // Recibirá un grupo de productos por Actualizar/Registrar, 
 // siendo respondabilidad  de la librería solamente procesar los elementos dentro de 
 // los limites de la restricción correspondiente. Haga las pausas correspondientes para evitar infracciones 
-// y no exceda la ejecución en más de 5 minutos por proceso. (Estime el tiempo por registro y calcule un escenario
+// y no exceda la ejecuón en más de 5 minutos por proceso. (Estime el tiempo por registro y calcule un escenario
 // pesimista para la cantidad de registros que pueda procesar)
 
 ### Flujo de productos por publicar en Lotes
@@ -124,13 +124,13 @@ interface iMarketPlace {
     public function deleteProductos($item);
 
     ### Solicita los productos por actualizar precio y realiza las llamadas correspondientes al MarketPlace
-    public function putPrecio();
+    public function putPrecio($item=FALSE);
 
     ### Solicita los productos por actualizar Stock y realiza las llamadas correspondientes al MarketPlace
-    public function putStock();
+    public function putStock($item=FALSE);
 
     ### Solicita los productos que tengan Variaciones nuevas y realiza las llamadas correspondientes al MarketPlace
-    public function postVariaciones();
+    public function postVariaciones($item=FALSE);
 
     ### Recibe el registro de la variacion a eliminar, asì como el producto del marketplace.
     public function deleteVariacion($variacion);
@@ -148,13 +148,13 @@ interface iMarketPlace {
     public function getPedidos($referencia='', $save=FALSE, $limit=50, $offset=0, $estatus='');
 
     ### Actualiza el estatus de una lista de pedidos en caso de cambio con respecto al pedido consultado.
-    public function getEstatusPedido();
+    public function getEstatusPedido($id=FALSE);
 
     ### Los MarketPlaces que son e-commerce, requieren que se carguen los pedidos
-    public function postPedidos();
+    public function postPedidos($id=FALSE);
 
     ### Los MarketPlaces que son e-commerce, requieren que se carguen los pedidos
-    public function putPedidos();
+    public function putPedidos($id=FALSE);
 
     ## Acción para autorizar el reintegro del pago al cliente
     public function postRefundPedido($referencia, $data=[]);
@@ -163,10 +163,10 @@ interface iMarketPlace {
     public function getFeeds($filtro=0, $dias=15, $save=FALSE);
 
     ### Algunos MarketPlaces, reciben las imágenes en operaciones diferentes a la alta de productos
-    public function postImagenes();
+    public function postImagenes($item=FALSE);
 
     ### La actualización de los imágenes en Los MarketPlaces
-    public function putImagenes();
+    public function putImagenes($item=FALSE);
 
     ### La recuperación de documentos del marketplace de los pedidos
     public function getDocumento($documento, $referencia);

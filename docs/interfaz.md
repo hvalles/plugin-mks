@@ -199,7 +199,7 @@ pueden utilizarse para alimentar el valor del atributo.
  Se deberá de crear una publicación (Producto) por cada hijo, siendo el sku del hijo el que se registre.
  y se deberán hacer sus llamadas correspondientes a addProducto y addStock
 
-- En caso de que $item = FALSE se llanará a 
+- En caso de que $item = FALSE se llamará a 
 - Auxiliar getProductos($estatus=iMarketPlace::ITEM_SIN_PUBLICAR); 
 Para obtener un listado de a lo más 100 productos sin publicar
 - En caso de que los productos se procesen en lotes, en esta función, deberá de realizar las operaciones correspondeites para la actualización de imágenes, variaciones, etc.
@@ -234,28 +234,31 @@ Para obtener un listado de a lo más 100 productos sin publicar
 - Esta función eliminará la tabla secundaria de Stock del producto y de las imagenes registradas
 
 ### Solicita los productos por actualizar precio y realiza las llamadas correspondientes al MarketPlace
+en caso de que $item sea FALSE realizar llamada a 
  getProductos($estatus=iMarketPlace::ITEM_PRECIO_CAMBIO); 
  Para obtener un listado de productos ya publicados con precios por actualizar.
  Por cada actualización llamar en Auxiliar a:
 - updProducto($data); // Campos de precio cambiados y el id
 - addBitacora($data);
-- `public  function putPrecio();`
+- `public  function putPrecio($item=FALSE);`
 
 ### Solicita los productos por actualizar Stock y realiza las llamadas correspondientes al MarketPlace
+en caso de que $item sea FALSE realizar llamada a 
  getProductos($estatus=iMarketPlace::ITEM_STOCK_CAMBIO); 
   Para obtener un listado de productos ya publicados con precios por actualizar.
  Por cada actualización llamar en Auxiliar a:
 - updStock($data);
 - addBitacora($data);
-- `public  function putStock();`
+- `public  function putStock($item=FALSE);`
 
 ### Solicita los productos que tengan Variaciones nuevas y realiza las llamadas correspondientes al MarketPlace
- getProductos($estatus=iMarketPlace::ITEM_VARIACION); 
+en caso de que $item sea FALSE realizar llamada a 
+getProductos($estatus=iMarketPlace::ITEM_VARIACION); 
  Para obtener un listado de productos ya publicados con precios por actualizar.
  Por cada actualización llamar en Auxiliar a:
 - addStock($data);
 - addBitacora($data);
-- `public  function postVariaciones();`
+- `public  function postVariaciones($item=FALSE);`
 
 ### Recibe el registro de la variacion a eliminar, así como el producto del marketplace.
  Llamará al MPS para eliminar dicha variación 
@@ -298,21 +301,23 @@ Para obtener un listado de a lo más 100 productos sin publicar
 
 
 ### Actualiza el estatus de una lista de pedidos en caso de cambio con respecto al pedido consultado.
+ en caso de que $id sea FALSE realizar  
  Llamada Auxiliar para obtener listado de pedidos getPedidos($limit=50)
  Automáticamente limitará la llamada a los últimos 30 días o el límite explicito, 
  el orden será la fecha de creación del pedido
  Por cada actualización llamar en Auxiliar a:    
 - updPedido($pedido, $estatus, $total=0, $pedido_mkt=null); // estatus actualizado
 - addBitacora($data);
-- `public  function getEstatusPedido();`
+- `public  function getEstatusPedido($id=FALSE);`
 
 ### Los MarketPlaces que son e-commerce, requieren que se carguen los pedidos
  generados en otros MarketPlaces
+ en caso de que $id sea FALSE realizar llamada a 
  getPedidos($limit); Devuelve los pedido que aun no han sido actualizados en el e-commerce.
  Por cada actualización llamar en Auxiliar a:
  updPedido($pedido, $estatus, $total=0, $pedido_mkt=null); // Se spera un id entero (bigint) en pedido_mkt
  addBitacora($data);
-- `public  function postPedidos();`
+- `public  function postPedidos($id=FALSE);`
 
 ### Los MarketPlaces que son e-commerce, requieren que se carguen los pedidos
  generados en otros MarketPlaces
@@ -322,7 +327,7 @@ Para obtener un listado de a lo más 100 productos sin publicar
  Por cada actualización llamar en Auxiliar a:
 - updPedido($pedido, $estatus, $total=0, $pedido_mkt=null);
  addBitacora($data);
-- `public  function putPedidos();`
+- `public  function putPedidos($id=FALSE);`
 
 ## Acción para autorizar el reintegro del pago al cliente
  El $id es el pedido a devolver 
@@ -343,15 +348,17 @@ Para obtener un listado de a lo más 100 productos sin publicar
 
 ### Algunos MarketPlaces, reciben las imágenes en operaciones diferentes a la alta de productos
  Para esto el estatus de Alta en el Producto, 
+ en caso de que $item sea FALSE realizar llamada a 
  Auxiliar  getProductos($estatus, $data); // Regresa un listado de productos con estatus ITEM_SIN_IMAGEN;
  updProducto($data) // par actualizar estatus nuevo
  addImagen($data), para agregar las imágenes cargadas.
-- `public  function postImagenes();`
+- `public  function postImagenes($item=FALSE);`
 
 ### La actualización de los imágenes en Los MarketPlaces
-Se obtiene los productos con imagenes por atualizar a traves de la funcion getProductos
+en caso de que $item sea FALSE
+Se obtiene los productos con imagenes por actualizar a través de la funcion getProductos
 (iMarketPlace::ITEM_IMAGEN_CAMBIO), El registro se hará a través de esta función  Auxiliar updImagen($data);
-- `public  function putImagenes();`
+- `public  function putImagenes($item=FALSE);`
 
 ### La recuperación de documentos del marketplace de los pedidos
  El documento podría ser factura, nota de crédito, etc.
