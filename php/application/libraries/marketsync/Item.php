@@ -12,7 +12,7 @@ class Item {
     public $largo; // largo del producto
     public $peso; //peso del producto
 
-    public $sku; // El sku padre, cuakdo el padre no tiene que ser un hijo
+    public $sku; // El sku padre, cuando el padre no tiene que ser un hijo
     public $dias_embarque; // dias en los que se embarca revisar mñinimo del MPS
     public $categoria; // Categoria de MarketSync
     public $filtro; // Solo aplica para Claro

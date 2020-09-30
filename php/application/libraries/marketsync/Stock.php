@@ -22,8 +22,9 @@ class Stock {
     public $id_mk;      // Identificador de registro 
     public $sku_mk;     // Sku del hijo registrado en MPS 
     public $stock_mk;   // Stock registrado en MPS
+    public $stock_id;   // Identificador de stock
     public $market_sku; // Identificador de registro en MPS
-    public $referencia; // Identificador auciliar de registro en MPS
+    public $referencia; // Identificador auxiliar de registro en MPS
 
 }
 
