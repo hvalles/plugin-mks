@@ -328,7 +328,7 @@ PrivateKey, Token, RefreshToken, etc. ($global=FALSE)
 - `public function addGuia($data)`
 
 - Devuelve guias sin procesar
-- `public function getGuia()`
+- `public function getGuia($pedido=0)`
 
 - Procesa guías y devuelve registro
 - `public function updGuia($data)`

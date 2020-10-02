@@ -271,6 +271,7 @@ getProductos($estatus=iMarketPlace::ITEM_VARIACION);
  Por cada actualización llamar en Auxiliar a:
 - addGuia($data);
 - addBitacora($data);
+- En caso de que la guía ya hubiese sido actualizada, solamente descargarla
 - `public  function getGuias($pedidos);`
 
 ### Algunos MarketPlaces se les tiene que indicar la guía, ya que ellos no la proporcionan
@@ -290,7 +291,7 @@ getProductos($estatus=iMarketPlace::ITEM_VARIACION);
  la cantidad de pedidos esta definida por limit y el offset indica los pedidos a saltar.
  Si la referencia es válida, solamente traera el pedido que la referencia indica, independientemente 
  de su posicionamiento.
- De esta vacía (referencia), traera un grupo de pedidos, autorizados para entregar o
+ De esta vacía (referencia), traerá un grupo de pedidos, autorizados para entregar o
  de acuerdo a $estatus 
  Si el parámetro $save es TRUE correrá la función auxiliar addPedido($data).
 - addBitacora($data); recuperar pedido
