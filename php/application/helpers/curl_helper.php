@@ -5,7 +5,7 @@ Rutina para hacer llamadas a la API de MarketSync
 
 */
 
-function callAPI($url, $method="GET", $public=FALSE, $private=FALSE, $parameter=[], $data=[]) {
+function callAPI($url, $method="GET", $public=FALSE, $private=FALSE, $parameter=[], $data=[], $headers=[], $json=TRUE) {
         $PRIVATE_KEY = $private;
         $TOKEN = $public;
 
@@ -52,13 +52,25 @@ function callAPI($url, $method="GET", $public=FALSE, $private=FALSE, $parameter=
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
         if ($data) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($data));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+            if ($json) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($data));
+            } else {
+                curl_setopt($ch, CURLOPT_POSTFIELDS,$data);
+            }
+        }
+
+        if ($headers) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);    
+        } else {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));    
         }
         //log_message('error',$url);
         $response = curl_exec($ch);
+        //var_dump($ch);
+        //var_dump($response);
         
         if (!$response) {
+            //echo curl_error ( $ch );
             error_log(curl_error ( $ch ));
             curl_close($ch);
             return FALSE;
