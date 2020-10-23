@@ -29,6 +29,7 @@ Url de soporte y ayuda en línea, grupos de ayuda, etc.
 Url del api
 
 - Configuración inicial:
+(Ejemplos)
 Usuario: 
 Contraseña:
 Seller ID: AQRTY1523688
@@ -50,6 +51,27 @@ Enumere la lista de documentos en formato PDF/Word/Excel,etc que sean pertinente
 - Otras Observaciones:
 Aquí podemos englobar situaciones a las que no hemos documentado, porque no se ha presentado el caso o información
 requerida para operar la integración, pero que no existe en la información obtenida desde MarketSync.
+
+
+Categorias que son necesario de empatar para sus pruebas
+id   |categoria            |ruta                                                                                  |
+-----|---------------------|--------------------------------------------------------------------------------------|
+ 2688|CÁMARAS DIGITALES    |CÁMARAS_Y_ACCESORIOS/CÁMARAS/CÁMARAS_DIGITALES                                        |
+ 5670|CUIDADO CORPORAL     |BELLEZA_Y_CUIDADO_PERSONAL/CUIDADO_DE_LA_PIEL/CUIDADO_CORPORAL                        |
+17422|GELES ANTIBACTERIALES|SALUD_Y_EQUIPAMIENTO_MÉDICO/CUIDADO_DE_LA_SALUD/FARMACIA/GELES_ANTIBACTERIALES        |
+ 7094|SALSAS Y ADEREZOS    |ALIMENTOS_Y_BEBIDAS/DESPENSA/SALSAS_Y_CONDIMENTOS/SALSAS_Y_ADEREZOS                   |
+23625|TENIS                |ROPA_BOLSAS_Y_CALZADO/ZAPATOS/HOMBRE/TENIS                                            |
+ 7233|VESTIDOS             |ROPA_BOLSAS_Y_CALZADO/VESTIDOS                                                        |
+ 7357|PANTALONES Y JEANS   |ROPA_BOLSAS_Y_CALZADO/PANTALONES_Y_JEANS                                              |
+ 7356|BLUSAS               |ROPA_BOLSAS_Y_CALZADO/BLUSAS                                                          |
+23615|SANDALIAS Y OJOTAS   |ROPA_BOLSAS_Y_CALZADO/ZAPATOS/MUJER/SANDALIAS_Y_OJOTAS                                |
+23617|ZAPATILLAS Y TACONES |ROPA_BOLSAS_Y_CALZADO/ZAPATOS/MUJER/ZAPATILLAS_Y_TACONES                              |
+23368|PISOS CERÁMICOS      |HERRAMIENTAS_Y_CONSTRUCCIÓN/PISOS_PAREDES_Y_ABERTURAS/PISOS_CERÁMICOS                 |
+15292|KIT CLUTCH           |ACCESORIOS_PARA_VEHÍCULOS/REFACCIONES_AUTOS_Y_CAMIONETAS/TRANSMISIÓN/CLUTCH/KIT_CLUTCH|
+ 3212|CARROS               |JUEGOS_Y_JUGUETES/VEHÍCULOS_DE_JUGUETE/VEHÍCULOS_SIN_CONTROL_REMOTO/CARROS            |
+ 3201|CON CONTROL REMOTO   |JUEGOS_Y_JUGUETES/VEHÍCULOS_DE_JUGUETE/CON_CONTROL_REMOTO                             |
+
+Proporcione a MarketSync un listado con la categoría de su Market Correspondiente
 
 
 ###############################################################################
