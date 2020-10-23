@@ -91,6 +91,9 @@ del componente a los datos del cliente.
     - Expiration Date
     - Refresh Token
     - Entre otros
+8. Debe de implementar la interfaz correspondiente iMarketPlace, no hacerlo será motivo de rechazo del componente.
+9. Asegúrese de llenar el archivo docs/readme.txt con la información solicitada y la referencia detallada de donde obtuvo la información correspondiente.
+10. No debe de contener código hardoded, se alienta encarecidamente el uso de las mejores prácticas, defina constantes para esto.
 
 ### Observaciones
 - No tendrá acceso directo a la base de datos, a menos de que le sea concedido a través de un convenio directo con MarketSync

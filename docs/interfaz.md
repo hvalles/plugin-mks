@@ -125,16 +125,17 @@ interface iMarketPlace {`
 - Puede llamar a getConfig() para evisar los parámetros a configurar
 - Debe de llamar a la función getSettings, para determinar la configuración
 almacenada en la base de datos.
+- Es responsabilidad de la implementación hacer el llamado correspondiente para que se establezca la configuración inicial, antes de llamar a otras funciones de la librería.
 
 - `public  function SignIt($cliente);`
 
 ### Rutina de refrezco del Token
  Algunas apis lo requieren, de no necesitarse devolver NOT_IMPLEMENTED,
- dependiendo el tiempo de refrezco se hara el mismo, ejemplo si el MPS solicita un vambio de Token cada 3.5 horas, debe de realizar el cambio faltando entre 15 y 20 minutos o cuando se encuentre ya expirado.
+ dependiendo el tiempo de refrezco se hara el mismo, ejemplo si el MPS solicita un cambio de Token cada 3.5 horas, debe de realizar el cambio faltando entre 15 y 20 minutos o cuando se encuentre ya expirado.
 - `public  function refresh();`
 
 ### Devolverá la dirección específica de la llamada al módulo
- El servidor debio de ser cargado en SignIt desde la configuración
+ El servidor debió de ser cargado en SignIt desde la configuración
  En este punto se valida la caducidad del Token y se manda a llamar refresh 
  de ser necesario.
 - `public  function getURL($modulo, $parameters=[]);`
