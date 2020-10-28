@@ -10,7 +10,7 @@ El siguiente ejemplo se basa en un componente que permite actualizar el registro
 - El texto a agregar no contiene código HTML y el formato correspondiente es responsabilidad del usuario.
 
 **Entrada** 
-- Cliente, el usurio correspondiente que usa el componente.
+- Cliente, el usuario correspondiente que usa el componente.
 - MarketPlace, selecciona de una lista de marketplaces activos el que desea actualizar.
 - Pie de Ficha, la descripción a agregar al final de la ficha de producto.
 
