@@ -53,7 +53,7 @@ class Auxiliar {
 
     public function getSetting($id=0) {
         $url = $this->server . "settings";
-        $params = ['market'=>$this->market];
+        $params = ['market'=>$this->market,'id'=>$id];
         $res = callAPI($url, "GET", $this->publica, $this->privada, $params);
         return $res;
     }
