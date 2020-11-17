@@ -35,9 +35,8 @@ interface iMarketPlace {
     ### DEBE DE DECLARAR UNA CONSTANTE CON EL MARKETID ASIGNADO EN SU LIBRERIA
     ### const MARKETID = 100;
 
-
     // Devolución de funciones no impementadas
-    const NOT_IMPLEMENTED = -1; 
+    const NOT_IMPLEMENTED = -1001; 
 
     // Estatus de producto    
     const ITEM_SIN_CONFIRMAR = 99; 
@@ -54,6 +53,14 @@ interface iMarketPlace {
     const ITEM_IMAGEN_CAMBIO = 16; 
     const ITEM_VARIACION = 32; 
 
+    // Claves de Eventos
+    const EVENTO_AGREGAR = 1;
+    const EVENTO_ACTUALIZAR = 2;
+    const EVENTO_PRECIO_STOCK = 3;
+    const EVENTO_ELIMINAR = 4;
+    const EVENTO_ERROR = 5;
+    const EVENTO_REBUILD = 5;
+    const EVENTO_CONSULTAR = 5;
 
     // Estatus de Requests
     const REQUEST_CANCEL = 0;
@@ -77,11 +84,40 @@ interface iMarketPlace {
     const FEEDS_AGREGAR = 1;
     const FEEDS_ACTUALIZAR = 2;
 
+    // Colores MarketSync
+    const COLOR_GRIS = "GRIS";
+    const COLOR_AMARILLO = "AMARILLO";
+    const COLOR_AZUL = "AZUL";
+    const COLOR_BEIGE = "BEIGE";
+    const COLOR_BLANCO = "BLANCO";
+    const COLOR_CAFE = "CAFE";
+    const COLOR_COBRE = "COBRE";
+    const COLOR_FIUSHA = "FIUSHA";
+    const COLOR_MORADO = "MORADO";
+    const COLOR_MULTICOLOR = "MULTICOLOR";
+    const COLOR_NARANJA = "NARANJA";
+    const COLOR_NEGRO = "NEGRO";
+    const COLOR_ORO = "ORO";
+    const COLOR_PLATA = "PLATA";
+    const COLOR_ROJO = "ROJO";
+    const COLOR_ROSA = "ROSA";
+    const COLOR_VERDE = "VERDE";
+
+    const MINIMO_MXP = 10;
+    const MINIMO_USD = 1;
+
+    const SERVIDOR = 'http://sandbox.marketsync.mx/mks/';
+
+    # Regresa el ID que se les proporciono como indicador del marketplace 
+    public function getMarketId();
+
     ### Función que verifica la viabilidad actual del API
     public function getStatus();
 
-    ### Función de entrada, siempre será ejecutada
-    public function SignIt($cliente);
+    ### Función de entrada, siempre será ejecutada, data sera un objeto con la configuración almacanada
+    ### por el plugin, en $data debe de inc,uir sus llaves publicas y privadas para que se realice 
+    ### la conexion adecuadamente
+    public function SignIt($cliente, $data = null);
 
     ### Rutina de refrezco del Token
     public function refresh();

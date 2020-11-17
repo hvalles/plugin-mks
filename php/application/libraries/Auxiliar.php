@@ -1,17 +1,9 @@
 <?php
 
-require_once(__DIR__.'/../helpers/curl_helper.php');
+include_once(APPPATH.'helpers/curl_helper.php');
 class Auxiliar {
 
     const LIMITE_REGISTROS = 50;
-    const EVENTO_AGREGAR = 1;
-    const EVENTO_ACTUALIZAR = 2;
-    const EVENTO_PRECIO_STOCK = 3;
-    const EVENTO_ELIMINAR = 4;
-    const EVENTO_ERROR = 5;
-    const EVENTO_REBUILD = 5;
-    const EVENTO_CONSULTAR = 5;
-
 
     public $cliente = 0;
     public $market = 0;
@@ -53,14 +45,14 @@ class Auxiliar {
 
     public function getSetting($id=0) {
         $url = $this->server . "settings";
-        $params = ['market'=>$this->market,'id'=>$id];
+        $params = ['market'=>$this->market];
         $res = callAPI($url, "GET", $this->publica, $this->privada, $params);
         return $res;
     }
 
     public function addSetting($data, $global=FALSE) {
         $url = $this->server . "settings";
-        var_dump($data);
+        //var_dump($data);
         $this->checkData($data, ['id:i','valor:a']);
         $params = ['market'=>$this->market, 'clave'=>$global?'global':'config'];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
@@ -105,7 +97,7 @@ class Auxiliar {
     public function getCategoria($categoria='') {
         $url = $this->server . "categorias";
         $params = ['market'=>$this->market];
-        if ($categoria) $params[] = ['categoria'=>$categoria];
+        if ($categoria) $params['categoria']=$categoria;
         $res = callAPI($url, "GET", $this->publica, $this->privada, $params);
         return $res;
     }
@@ -348,9 +340,11 @@ class Auxiliar {
     }
 
     /* Localiza guias por actualizar */
-    public function getGuia() {
+    public function getGuia($pedido=0) {
+        $pedido = (int)$pedido;
         $url = $this->server . "guias";
         $params = ['market'=>$this->market];
+        if ($pedido) $params['pedido_id'] = $pedido;
         $res = callAPI($url, "GET", $this->publica, $this->privada, $params);
         return $res;
     }
@@ -464,7 +458,6 @@ class Auxiliar {
         $url = $this->server . "pedidos/iva";
         $params = ['market'=>$this->market];
         $res = callAPI($url, "GET", $this->publica, $this->privada, $params);
-        echo $url;
         return $res;
     }
 

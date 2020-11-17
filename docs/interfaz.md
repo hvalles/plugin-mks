@@ -71,7 +71,7 @@ interface iMarketPlace {`
     ### const MARKETID = 100;
 
     // Devolución de funciones no impementadas
-    const NOT_IMPLEMENTED = -1; 
+    const NOT_IMPLEMENTED = -1001; 
 
     // Estatus de producto    
     const ITEM_SIN_CONFIRMAR = 99; 
@@ -82,11 +82,20 @@ interface iMarketPlace {`
     const ITEM_SIN_PUBLICAR = -1; 
     const ITEM_DESHABILITADO = -2; 
 
-    const ITEM_NOMBRE_CAMBIO = 2;  // Usualmente no solo el nombre cambia, si no algún valor del registro
+    const ITEM_NOMBRE_CAMBIO = 2; 
     const ITEM_PRECIO_CAMBIO = 4; 
     const ITEM_STOCK_CAMBIO = 8; 
     const ITEM_IMAGEN_CAMBIO = 16; 
-    const ITEM_VARIACION = 32; // PRODUCTO CON VARIACIONES NUEVAS ONO REGISTRADAS
+    const ITEM_VARIACION = 32; 
+
+    // Claves de Eventos
+    const EVENTO_AGREGAR = 1;
+    const EVENTO_ACTUALIZAR = 2;
+    const EVENTO_PRECIO_STOCK = 3;
+    const EVENTO_ELIMINAR = 4;
+    const EVENTO_ERROR = 5;
+    const EVENTO_REBUILD = 5;
+    const EVENTO_CONSULTAR = 5;
 
     // Estatus de Requests
     const REQUEST_CANCEL = 0;
@@ -110,12 +119,39 @@ interface iMarketPlace {`
     const FEEDS_AGREGAR = 1;
     const FEEDS_ACTUALIZAR = 2;
 
+    // Colores MarketSync
+    const COLOR_GRIS = "GRIS";
+    const COLOR_AMARILLO = "AMARILLO";
+    const COLOR_AZUL = "AZUL";
+    const COLOR_BEIGE = "BEIGE";
+    const COLOR_BLANCO = "BLANCO";
+    const COLOR_CAFE = "CAFE";
+    const COLOR_COBRE = "COBRE";
+    const COLOR_FIUSHA = "FIUSHA";
+    const COLOR_MORADO = "MORADO";
+    const COLOR_MULTICOLOR = "MULTICOLOR";
+    const COLOR_NARANJA = "NARANJA";
+    const COLOR_NEGRO = "NEGRO";
+    const COLOR_ORO = "ORO";
+    const COLOR_PLATA = "PLATA";
+    const COLOR_ROJO = "ROJO";
+    const COLOR_ROSA = "ROSA";
+    const COLOR_VERDE = "VERDE";
+
+    const MINIMO_MXP = 10;
+    const MINIMO_USD = 1;
+
+    const SERVIDOR = 'http://sandbox.marketsync.mx/mks/';
+
 ```
 ### Función que verifica la viabilidad actual del API
  En el MarketPlace determinado
  Devuelve TRUE en caso de estar activo
  FALSE si no es así.
 - `public  function getStatus();`
+
+  # Regresa el ID que se les proporciono como indicador del marketplace 
+- `public function getMarketId();`
 
 ### Función de entrada, siempre será ejecutada
  El cliente será utilizado para obtener la  configuración de conexión y las llaves
