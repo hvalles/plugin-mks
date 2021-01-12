@@ -35,6 +35,7 @@ interface iMarketPlace {
     ### DEBE DE DECLARAR UNA CONSTANTE CON EL MARKETID ASIGNADO EN SU LIBRERIA
     ### const MARKETID = 100;
 
+
     // Devolución de funciones no impementadas
     const NOT_IMPLEMENTED = -1001; 
 
@@ -60,7 +61,7 @@ interface iMarketPlace {
     const EVENTO_ELIMINAR = 4;
     const EVENTO_ERROR = 5;
     const EVENTO_REBUILD = 5;
-    const EVENTO_CONSULTAR = 5;
+    const EVENTO_CONSULTAR = 7;
 
     // Estatus de Requests
     const REQUEST_CANCEL = 0;
@@ -79,7 +80,7 @@ interface iMarketPlace {
     const PEDIDO_ENTREGADO = 3;
     const PEDIDO_DEVUELTO = -1;
     const PEDIDO_REFUNDED = -2; // DINERO REINTEGRADO
-    const PEDIDO_NOREPORTADO = 32;   // PEDIDOS QUE NO HAN SIFO REPORTADOS AL E-COMMERCE
+    const PEDIDO_NOREPORTADO = 32;   // PEDIDOS QUE NO HAN SIDO REPORTADOS AL E-COMMERCE
     const PEDIDO_CAMBIO = 64;   // PEDIDOS CUYO ESTATUS FUE ACTUALIZADO
     const FEEDS_AGREGAR = 1;
     const FEEDS_ACTUALIZAR = 2;
@@ -107,6 +108,7 @@ interface iMarketPlace {
     const MINIMO_USD = 1;
 
     const SERVIDOR = 'http://sandbox.marketsync.mx/mks/';
+    
 
     # Regresa el ID que se les proporciono como indicador del marketplace 
     public function getMarketId();
@@ -115,7 +117,7 @@ interface iMarketPlace {
     public function getStatus();
 
     ### Función de entrada, siempre será ejecutada, data sera un objeto con la configuración almacanada
-    ### por el plugin, en $data debe de inc,uir sus llaves publicas y privadas para que se realice 
+    ### por el plugin, en $data debe de incluir sus llaves publicas y privadas para que se realice 
     ### la conexion adecuadamente
     public function SignIt($cliente, $data = null);
 
@@ -227,6 +229,9 @@ interface iMarketPlace {
 
     ### Acción para escalar un ticket 
     public function escalateTicket($id, $data=[]);
+
+    ### Acción para conciliar MarketPlce
+    public function conciliar($item = FALSE);
 
     ### **************************************************************************
     ### El resto de las llamadas, tienen poca probabilidad de existir en el market,

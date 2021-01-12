@@ -1,9 +1,9 @@
 <?php
 
-include_once(APPPATH.'helpers/curl_helper.php');
+include_once(APPPATH.'/helpers/curl_helper.php');
 class Auxiliar {
 
-    const LIMITE_REGISTROS = 50;
+    const LIMITE_REGISTROS = 100;
 
     public $cliente = 0;
     public $market = 0;
@@ -17,7 +17,74 @@ class Auxiliar {
     public $requiere_categoria = TRUE; // Si es FALSE el MPS no soporta categorías    
     public $requiere_envio = FALSE; // Si es TRUE el MPS no cobra el envío, lo hace el seller.    
     public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lotes o de uno en uno
+    public $requiere_sat = FALSE; // Si el MPS requiere codigo de producto del SAT
     public $precio_minimo = 10.0;
+
+
+    // DEvuelve el codigo de respuesta de la llamada
+    public function getCode($res) {
+        if (is_object($res) && property_exists($res, 'http_code')) 
+            return $res->http_code;
+        if (is_array($res) && isset($res['http_code']))
+            return $res['http_code'];
+
+        return 'Error';
+    }
+
+    // Revisa que la llamada haya tenido éxito
+    public function responseOk($res) {
+        $code = $this->getCode($res);
+        //print "***** Code:$code".PHP_EOL;
+        return ( $code >= 200 && $code < 300);
+    }
+
+    public function getAnswer($data, $key=FALSE) {
+        if (!$data) return FALSE;
+        if (!$this->responseOk($data)) return FALSE;
+        if (!isset($data->answer) || !is_array($data->answer) || count($data->answer)==0) return FALSE;
+        if (!$key) return $data->answer[0];
+        $res = (string)$data->answer[0]->{$key};
+        return $res;
+    }
+
+
+    // Devolvera el atribut generico que se aproxime primero al deseado
+    public function mapAtributo($mapa, $item=null, $variacion=null) {
+        $ops = [];
+        $comodin = [];
+        $vars = [];
+        foreach (explode(',',$mapa) as $o) 
+            if ( strpos($o,'%')!==FALSE) {
+                $comodin[] = str_replace('%','',trim($o));
+            } elseif ( strpos($o,'$')!==FALSE) {
+                $vars[] = str_replace('$','', trim($o));
+            } else {            
+                $ops[] = trim($o);
+            }
+
+        // Es una variable del registro
+        if ($vars && $item) return $item->{$vars[0]};
+
+        if ($variacion) { // Atributo de variacion
+            foreach ($variacion->atributos as $key) {
+                //var_dump($key);
+                if (in_array($key->atributo,$ops) && $key->valor) return $key->valor;
+                foreach ($comodin as $k) 
+                    if (strpos($k, $key->atributo)!== FALSE && $key->valor)
+                        return $key->valor;
+            }
+        }
+        if ($item) { // Atributo de item
+            foreach ($item->atributos as $key) {
+                if (in_array($key->atributo,$ops) && $key->valor) return $key->valor;
+                foreach ($comodin as $k) 
+                    if (strpos($k, $key->atributo)!== FALSE && $key->valor)
+                        return $key->valor;
+            }
+        }
+
+        return ''; // No se encontro
+    }
 
     /* Devuelve el registro de campos a configurar */
     public function getConfig() {
@@ -33,6 +100,7 @@ class Auxiliar {
             'requiere_categoria' => $this->requiere_categoria,
             'precio_minimo' => $this->precio_minimo,
             'requiere_envio' => $this->requiere_envio,
+            'requiere_sat' => $this->requiere_sat,
             'procesa_lotes' => $this->procesa_lotes
         );
     }
@@ -45,23 +113,32 @@ class Auxiliar {
 
     public function getSetting($id=0) {
         $url = $this->server . "settings";
-        $params = ['market'=>$this->market];
+        if (is_numeric($id)) {
+            $params = ['market'=>$this->market, 'id'=>$id];
+        } else {
+            $params = ['market'=>$this->market, 'clave'=>$id];            
+        }
+        
         $res = callAPI($url, "GET", $this->publica, $this->privada, $params);
         return $res;
     }
 
     public function addSetting($data, $global=FALSE) {
         $url = $this->server . "settings";
-        //var_dump($data);
-        $this->checkData($data, ['id:i','valor:a']);
-        $params = ['market'=>$this->market, 'clave'=>$global?'global':'config'];
+        $clave = $global === TRUE ? 'global' : 'config';
+        if (isset($data['clave'])) { 
+            $clave=$data['clave'];
+            unset($data['clave']);
+        }
+        $this->checkData($data, ['id:i','valor:s1500']);
+        $params = ['market'=>$this->market, 'clave'=>$clave];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
         return $res;
     }
 
     public function updSetting($data, $global=FALSE) {
         $url = $this->server . "settings";
-        $this->checkData($data, ['id:i','valor:a']);
+        $this->checkData($data, ['id:i','valor:s1500']);
         $params = ['market'=>$this->market, 'clave'=>$global?'global':'config'];
         $res = callAPI($url, "PUT", $this->publica, $this->privada, $params, $data);
         return $res;
@@ -174,7 +251,7 @@ class Auxiliar {
     /*  Recibe arreglo del valor de atributo,  Devuelve el registro generado  */
     public function addValor($data) {
         $url = $this->server . "valores";
-        $fields = ['id:i', 'key_id:i', 'clasificacion:s8', 'clave:s50', 'valor:s50'];        
+        $fields = ['id:i', 'key_id:i', 'clasificacion:s8', 'clave:s50', 'valor:s100'];        
         $this->checkData($data, $fields);
         if (!in_array($data['clasificacion'],['etiqueta','unidad','valor']))
             throw new Exception("Error clasificacion value is not valid. ['etiqueta','unidad','valor']");
@@ -242,10 +319,12 @@ class Auxiliar {
         $params['requiere_color'] = $this->requiere_color?1:0;
         $params['requiere_categoria'] = $this->requiere_categoria?1:0;        
         $params['requiere_envio'] = $this->requiere_envio?1:0;        
+        $params['requiere_sat'] = $this->requiere_sat?1:0;        
         $params['precio_minimo'] = $this->precio_minimo;
         if ($id) $params['ids'] = $id;
         if ($limit) $params['limit']=$limit;
         $res = callAPI($url, "GET", $this->publica, $this->privada, $params);
+        //print_r($res);
         return $res;
     }
 
@@ -391,7 +470,6 @@ class Auxiliar {
         return $res;
     }
 
-
     /* Atualiza registro de pedido   */
     public function updPedido($id, $estatus, $total=0, $pedido_mkt=null) {
         $url = $this->server . "pedidos";
@@ -428,7 +506,7 @@ class Auxiliar {
     /* Registra feed en caso  de procesamiento en lote */
     public function addFeed($data) {
         $url = $this->server . "feeds";
-        $fields = ['id:i','feed:s50','request:s15000'];
+        $fields = ['id:i','feed:s50','request:s100000'];
         $this->checkData($data, $fields);
         $params = ['market'=>$this->market];
         $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
@@ -454,6 +532,7 @@ class Auxiliar {
         return $res;
     }
 
+    /* Obtiene el porcentaje de impuiestos */
     public function getTax() {
         $url = $this->server . "pedidos/iva";
         $params = ['market'=>$this->market];
@@ -461,6 +540,29 @@ class Auxiliar {
         return $res;
     }
 
+    /* Almacena productos del marketplace en MarketSync para futura conciliacion */
+    public function addConcilia($data) {
+        $url = $this->server . "audita";
+        $fields = ['id:i','market_sku:s20','sku:s20', 'nombre:s120','ficha:s15000',
+        'seller_sku:s20','url:s500','stock:i', 'precio:f', 'oferta:f', 'gtin:s20', 
+        'imagen:s500', 'estatus:s20', 'ref_parent:s20', 'ref_child:s20', 'medida:s20',
+        'bullet1:s500','bullet2:s500','bullet3:s500','bullet4:s500','bullet5:s500',
+        'modelo:s30', 'marca:s50'];
+        $this->checkData($data, $fields);
+        $params = ['market'=>$this->market];
+        $res = callAPI($url, "POST", $this->publica, $this->privada, $params, $data);
+        return $res;
+    }
+
+    /* Reconstruye informacion de productos dados de alta en el marketplace directamente 
+    y que existen en MarketSync*/
+    public function updConcilia() {
+        $url = $this->server . "audita";
+        $params = ['market'=>$this->market];
+        $res = callAPI($url, "PUT", $this->publica, $this->privada,$params);
+        return $res;
+    }
+    
     function chkDate($date, $format = 'Y-m-d H:i:s') {
         DateTime::createFromFormat($format, $date);
         $errors = DateTime::getLastErrors();
@@ -504,9 +606,9 @@ class Auxiliar {
                     if ($dt=='i' && (!is_numeric($v)||(int)$v!=$v) && !(in_array($n,['id','shipping_id']) && is_null($v)))
                         throw new Exception(" field ($n) at row [$i] is not a valid integer $v.");
                     if ($dt=='f' && !is_numeric($v))
-                        throw new Exception(" field ($n) at row [$i] is not a valid number.");
+                        throw new Exception(" field ($n) at row [$i] is not a valid number $v.");
                     if ($dt=='b' && (!is_numeric($v) ||  !in_array((int)$v, [0,1])))
-                        throw new Exception(" field ($n) at row [$i] is not a valid value.");
+                        throw new Exception(" field ($n) at row [$i] is not a valid value $v.");
                     if ($dt=='t' && (!is_numeric($v) ||  (int)$v > 255))
                         throw new Exception(" field ($n) at row [$i] is not a valid value.");
                     if ($dt=='d' && !$this->chkDate($v))
