@@ -52,10 +52,11 @@ function callAPI($url, $method="GET", $public=FALSE, $private=FALSE, $parameter=
         //curl_setopt($ch, CURLOPT_VERBOSE, TRUE);
         //curl_setopt($ch, CURLOPT_HEADER, TRUE);
         //curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        //print_r($url);
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
-        // DO NOT VERIFY
+        // DO NOT VERIFY SSL Debug Only
         #curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         #curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);                
         
@@ -74,8 +75,7 @@ function callAPI($url, $method="GET", $public=FALSE, $private=FALSE, $parameter=
         }
         $response = curl_exec($ch);
         if (!$response) {
-            //log_message('error',curl_error ( $ch ));
-            error_log(curl_error ( $ch ));
+            log_message('error',curl_error ( $ch ));
             curl_close($ch);
             return FALSE;
         }
@@ -163,7 +163,7 @@ function downloadAPI($formato, $server, $archivo, $puerto='', $user='', $passwor
 
     if ($formato == 'sftp') {
         $current = getcwd();
-        $folder = DIR_MARKET.'Shared'.DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR;
+        $folder = DIR_MARKET ?? '.'.'Shared'.DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR;
         chdir($folder);
         if (ENVIRONMENT=='production') {
             $cmd = "/usr/bin/python secure_ftp.py --path=$path --server=$server --user=$user --password='$password' --file='$archivo'";
@@ -172,12 +172,13 @@ function downloadAPI($formato, $server, $archivo, $puerto='', $user='', $passwor
         }
 
         $data = '';
-        log_message('error', $cmd);
+        //log_message('error', $cmd);
         try {
             exec($cmd, $data, $res);
             sleep(2);
         } catch (Exception $e) {
-            log_message('error', $e->getMessage());
+            if (function_exists('log_message'))
+                log_message('error', $e->getMessage());
         }
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-include_once(APPPATH.'/helpers/curl_helper.php');
+include_once(APPPATH.'helpers/curl_helper.php');
 class Auxiliar {
 
     const LIMITE_REGISTROS = 100;
@@ -19,6 +19,7 @@ class Auxiliar {
     public $procesa_lotes = FALSE; // Si el MPS procesa la alta de productos en lotes o de uno en uno
     public $requiere_sat = FALSE; // Si el MPS requiere codigo de producto del SAT
     public $precio_minimo = 10.0;
+    public $imagen_minimo = 1;
 
 
     // DEvuelve el codigo de respuesta de la llamada
@@ -53,17 +54,21 @@ class Auxiliar {
         $ops = [];
         $comodin = [];
         $vars = [];
+        $cons = '';
         foreach (explode(',',$mapa) as $o) 
             if ( strpos($o,'%')!==FALSE) {
-                $comodin[] = str_replace('%','',trim($o));
+                $comodin[] = str_replace('%','',trim($o)); // atributos a escoger
             } elseif ( strpos($o,'$')!==FALSE) {
-                $vars[] = str_replace('$','', trim($o));
+                $vars[] = str_replace('$','', trim($o)); // Valor de item
+            } elseif ( strpos($o,':')!==FALSE) {
+                $cons = str_replace(':','', trim($o)); // Valor constante
             } else {            
-                $ops[] = trim($o);
+                $ops[] = trim($o); // Este atributo
             }
 
         // Es una variable del registro
         if ($vars && $item) return $item->{$vars[0]};
+        if ($cons && $item) return $cons;
 
         if ($variacion) { // Atributo de variacion
             foreach ($variacion->atributos as $key) {
@@ -99,6 +104,7 @@ class Auxiliar {
             'requiere_color' => $this->requiere_color,
             'requiere_categoria' => $this->requiere_categoria,
             'precio_minimo' => $this->precio_minimo,
+            'imagen_minimo' => $this->imagen_minimo,
             'requiere_envio' => $this->requiere_envio,
             'requiere_sat' => $this->requiere_sat,
             'procesa_lotes' => $this->procesa_lotes
@@ -321,8 +327,10 @@ class Auxiliar {
         $params['requiere_envio'] = $this->requiere_envio?1:0;        
         $params['requiere_sat'] = $this->requiere_sat?1:0;        
         $params['precio_minimo'] = $this->precio_minimo;
+        $params['imagen_minimo'] = $this->imagen_minimo;
         if ($id) $params['ids'] = $id;
         if ($limit) $params['limit']=$limit;
+        //print_r($url);
         $res = callAPI($url, "GET", $this->publica, $this->privada, $params);
         //print_r($res);
         return $res;

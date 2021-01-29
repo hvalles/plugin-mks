@@ -25,6 +25,7 @@ class Item {
     public $variaciones = [];
     public $producto_market = null; // Registro de  parent sku por market en Marketsync
     public $categoria_mkt; // Categoria del MarketPlace
+    public $ruta; // Ruta de categoria
     public $precios;  // Precio del producto en el Market
     public $variacion_tipo; // SIZE, COLOR, PATTERN, ETC.
     public $variacion_atr; // ATRIBUTO QUE DETERMINA LA VARIACION 
@@ -39,13 +40,18 @@ class Item {
     public $pancho; // Ancho del paquete
     public $plargo; // Largo del paquete
     public $ppeso; // Peso del paquete
-    public $origen; // País de origen
+    public $origen; // País de origen No.
+    public $pais; // País de origen nombre
+    public $pais_es; // País de origen nombre espa
+    public $code2; // Código de pais de origen Ej US
+    public $code3; // Código de pais de origen 3 caracteres Ej USA
     public $etiquetas_web; // Filtros de e-commerce (Shopify)
-
+    public $taxcode; // Código de producto del SAT
+    public $iva: // Iva del peoducto
+    
     // Variables privadas
     private $_genero = null;
     private $_edad_minima = null;
-
 
     public function getAtributo($atributo) {
         foreach ($this->atributos as $atr) {
