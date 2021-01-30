@@ -47,7 +47,7 @@ class Item {
     public $code3; // Código de pais de origen 3 caracteres Ej USA
     public $etiquetas_web; // Filtros de e-commerce (Shopify)
     public $taxcode; // Código de producto del SAT
-    public $iva: // Iva del peoducto
+    public $iva; // Iva del peoducto
     
     // Variables privadas
     private $_genero = null;
