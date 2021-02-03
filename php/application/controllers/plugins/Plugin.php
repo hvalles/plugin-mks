@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // En sandbox y producción los datos se recuperaran de la base de datos,
 // para poder hacer las pruebas locales se simula las onsultas y regresa objetos PHP
 
-class Plugin extends CI_Controller {
+class Plugin extends My_Controller {
     public function __construct(){
         parent::__construct();
         $this->mainModel = 'settings_m';
