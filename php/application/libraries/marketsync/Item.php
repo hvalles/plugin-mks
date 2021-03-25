@@ -17,6 +17,7 @@ class Item {
     public $categoria; // Categoria de MarketSync
     public $filtro; // Solo aplica para Claro
     public $marca; 
+    public $marca_market; // Identificador de marca en marketplace
     public $etiquetas; // filtros de busqueda en el  mps
     public $modelo;    
 
@@ -48,7 +49,7 @@ class Item {
     public $etiquetas_web; // Filtros de e-commerce (Shopify)
     public $taxcode; // Código de producto del SAT
     public $iva; // Iva del peoducto
-    
+
     // Variables privadas
     private $_genero = null;
     private $_edad_minima = null;
