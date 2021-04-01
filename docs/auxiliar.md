@@ -135,7 +135,7 @@ PrivateKey, Token, RefreshToken, etc. ($global=FALSE)
 ```php
         $atr = [
             'id'           => null, // Identificador de atributo [int]
-            'categoria_id' => 1001, // Identificador de categoría a la que pertenece el atributo [int]
+            'categoria_id' => 1001, // Identificador de categoría de MarketSync a la que pertenece el atributo [int]
             'atributo'     => 'GENDER', // Clave del atributo en el marketplace [string(100)]
             'orden'        => 1, //Posicion del atributo en jerarquía  [int]
             'nombre',      => 'Género', // Como se le presenta al usuario [string(100)]
